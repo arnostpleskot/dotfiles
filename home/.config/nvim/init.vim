@@ -86,6 +86,9 @@ Plug 'arcticicestudio/nord-vim'
 "" Elm Bundle
 Plug 'elmcast/elm-vim'
 
+" elixir
+"" Elixir Bundle
+Plug 'elixir-editors/vim-elixir'
 
 " html
 "" HTML Bundle
@@ -98,14 +101,22 @@ Plug 'mattn/emmet-vim'
 " javascript
 "" Javascript Bundle
 Plug 'pangloss/vim-javascript'
-
 Plug 'mxw/vim-jsx'
 Plug 'fleischie/vim-styled-components'
-Plug 'sgur/vim-editorconfig'
 
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript.jsx', 'jsx', 'javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown'] }
+" Autocomplete
+"" Autocomplete Bundle
+Plug 'Shougo/deoplete.nvim'
+"" Javascript
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+"" Elixir
+Plug 'thinca/vim-ref'
+Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
+"" Elm
+Plug 'pbogut/deoplete-elm'
+
+" Editorconfig
+Plug 'sgur/vim-editorconfig'
 
 call plug#end()
 
@@ -459,9 +470,9 @@ let g:elm_format_autosave = 1
 let g:polyglot_disabled = ['elm']
 
 " syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:elm_syntastic_show_warnings = 1
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:elm_syntastic_show_warnings = 1
 
 
 " html
@@ -473,10 +484,23 @@ autocmd Filetype html setlocal ts=2 sw=2 expandtab
 let g:javascript_enable_domhtmlcss = 1
 
 " eslint for javascript
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_eslint_exec = 'npm run lint --'
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_eslint_exec = 'npm run lint --'
+
+" Ale
+" Put this in vimrc or a plugin file of your own.
+" After this is configured, :ALEFix will try and fix your JS code with ESLint.
+let g:ale_fixers = {
+\   'elm': ['elm-format'],
+\   'javascript': ['prettier', 'eslint'],
+\   'jsx': ['stylelint', 'prettier', 'eslint'],
+\}
+
+" Set this setting in vimrc if you want to fix files automatically on save.
+" This is off by default.
+let g:ale_fix_on_save = 1
 
 "*****************************************************************************
 "" Convenience variables
