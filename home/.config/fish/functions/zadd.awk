@@ -1,0 +1,1 @@
+/Users/arnost/.config/fisherman/z/functions/zadd.awk
