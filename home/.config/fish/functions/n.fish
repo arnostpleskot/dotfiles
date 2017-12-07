@@ -1,3 +1,7 @@
 function n
-	nvim .
+  if count $argv > 0
+    nvim $argv
+  else
+    nvim .
+  end
 end
