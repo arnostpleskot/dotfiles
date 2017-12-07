@@ -554,7 +554,10 @@ let g:nord_italic_comments = 1
 let g:nord_uniform_status_lines = 1
 let g:airline_theme='nord'
 
-source ~/.config/nvim/plugged/nord-vim/colors/nord.vim
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
+
+" source ~/.config/nvim/plugged/nord-vim/colors/nord.vim
 colorscheme nord
 
 set mouse=a
