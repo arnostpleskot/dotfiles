@@ -110,8 +110,9 @@ Plug 'Shougo/deoplete.nvim'
 "" Javascript
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 "" Elixir
-Plug 'thinca/vim-ref'
-Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
+" Plug 'thinca/vim-ref'
+" Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
+Plug 'slashmili/alchemist.vim'
 "" Elm
 Plug 'pbogut/deoplete-elm'
 
@@ -202,8 +203,6 @@ else
   let g:indentLine_concealcursor = 0
   let g:indentLine_char = '┆'
   let g:indentLine_faster = 1
-
-  
 endif
 
 
