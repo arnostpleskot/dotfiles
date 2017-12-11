@@ -1,5 +1,5 @@
 function n
-  if count $argv > 0
+  if count $argv
     nvim $argv
   else
     nvim .
