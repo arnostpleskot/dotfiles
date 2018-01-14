@@ -76,7 +76,8 @@ endif
 Plug 'honza/vim-snippets'
 
 "" Color
-Plug 'arcticicestudio/nord-vim'
+" Plug 'arcticicestudio/nord-vim'
+Plug 'dracula/vim'
 
 "*****************************************************************************
 "" Custom bundles
@@ -494,7 +495,7 @@ let g:javascript_enable_domhtmlcss = 1
 let g:ale_fixers = {
 \   'elm': ['elm-format'],
 \   'javascript': ['prettier', 'eslint'],
-\   'jsx': ['stylelint', 'prettier', 'eslint'],
+\   'jsx': ['prettier', 'eslint'],
 \}
 
 " Set this setting in vimrc if you want to fix files automatically on save.
@@ -549,15 +550,12 @@ let g:jsx_ext_required = 0
 " let g:jsx_pragma_required = 1
 
 let g:python_host_prog='/usr/bin/python'
-let g:nord_italic_comments = 1
-let g:nord_uniform_status_lines = 1
-let g:airline_theme='nord'
+let g:airline_theme='dracula'
 
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
 
-" source ~/.config/nvim/plugged/nord-vim/colors/nord.vim
-colorscheme nord
+colorscheme dracula
 
 set mouse=a
 set autowriteall
