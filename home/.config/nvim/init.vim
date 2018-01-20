@@ -559,3 +559,6 @@ colorscheme dracula
 
 set mouse=a
 set autowriteall
+
+" Get rid of | cahracter in vertical split bar (https://stackoverflow.com/questions/9001337/vim-split-bar-styling)
+set fillchars+=vert:\ 
