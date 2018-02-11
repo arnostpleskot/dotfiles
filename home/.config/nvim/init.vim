@@ -48,6 +48,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
 Plug 'ryanoasis/vim-devicons'
+Plug 'hecal3/vim-leader-guide'
 Plug 'Shougo/denite.nvim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/neomru.vim'
@@ -148,8 +149,9 @@ set shiftwidth=2
 set expandtab
 set smarttab
 
-"" Map leader to ,
-let mapleader=','
+"" Map leader to <SPACE>
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
 
 "" Enable hidden buffers
 set hidden
@@ -278,13 +280,6 @@ noremap <F3> :NERDTreeToggle<CR>
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_prompt =  '$ '
 
-" terminal emulation
-if g:vim_bootstrap_editor == 'nvim'
-  nnoremap <silent> <leader>sh :terminal<CR>
-else
-  nnoremap <silent> <leader>sh :VimShellCreate<CR>
-endif
-
 "*****************************************************************************
 "" Functions
 "*****************************************************************************
@@ -330,26 +325,6 @@ set autoread
 "" Mappings
 "*****************************************************************************
 
-"" Split
-noremap <Leader>h :<C-u>split<CR>
-noremap <Leader>v :<C-u>vsplit<CR>
-
-"" Git
-noremap <Leader>ga :Gwrite<CR>
-noremap <Leader>gc :Gcommit<CR>
-noremap <Leader>gsh :Gpush<CR>
-noremap <Leader>gll :Gpull<CR>
-noremap <Leader>gs :Gstatus<CR>
-noremap <Leader>gb :Gblame<CR>
-noremap <Leader>gd :Gvdiff<CR>
-noremap <Leader>gr :Gremove<CR>
-
-" session management
-nnoremap <leader>so :OpenSession<Space>
-nnoremap <leader>ss :SaveSession<Space>
-nnoremap <leader>sd :DeleteSession<CR>
-nnoremap <leader>sc :CloseSession<CR>
-
 "" Tabs
 nnoremap <Tab> gt
 nnoremap <S-Tab> gT
@@ -374,24 +349,18 @@ call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
       \ '.idea/', 'dist/', 'coverage/',
       \ 'tags', 'tags-*',
       \ 'deps/'])
-	call denite#custom#map(
-	      \ 'insert',
-	      \ '<Down>',
-	      \ '<denite:move_to_next_line>',
-	      \ 'noremap'
-	      \)
-	call denite#custom#map(
-	      \ 'insert',
-	      \ '<Up>',
-	      \ '<denite:move_to_previous_line>',
-	      \ 'noremap'
-	      \)
-
-
-nnoremap <silent> <leader>f :Denite grep -no-empty grep<CR>
-nnoremap <silent> <leader>b :Denite buffer<CR>
-nnoremap <silent> <leader>e :DeniteProjectDir file_rec<CR>
-
+call denite#custom#map(
+      \ 'insert',
+      \ '<Down>',
+      \ '<denite:move_to_next_line>',
+      \ 'noremap'
+      \)
+call denite#custom#map(
+      \ 'insert',
+      \ '<Up>',
+      \ '<denite:move_to_previous_line>',
+      \ 'noremap'
+      \)
 
 " snippets
 let g:UltiSnipsExpandTrigger="<s-tab>"
@@ -415,7 +384,7 @@ if has('unnamedplus')
 endif
 
 noremap YY "+y<CR>
-noremap <leader>p "+gP<CR>
+noremap <C-p> "+gP<CR>
 noremap XX "+x<CR>
 
 if has('macunix')
@@ -423,18 +392,6 @@ if has('macunix')
   vmap <C-x> :!pbcopy<CR>
   vmap <C-c> :w !pbcopy<CR><CR>
 endif
-
-"" Buffer nav
-noremap <leader>z :bp<CR>
-noremap <leader>q :bp<CR>
-noremap <leader>x :bn<CR>
-noremap <leader>w :bn<CR>
-
-"" Close buffer
-noremap <leader>c :bd<CR>
-
-"" Clean search (highlight)
-nnoremap <silent> <leader><space> :noh<cr>
 
 "" Switching windows
 noremap <C-j> <C-w>j
@@ -449,9 +406,6 @@ vmap > >gv
 "" Move visual block
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-
-"" Open current line on GitHub
-nnoremap <Leader>o :.Gbrowse<CR>
 
 "*****************************************************************************
 "" Custom configs
@@ -545,6 +499,9 @@ endif
 "*****************************************************************************
 "" User config
 "*****************************************************************************
+
+" Map for vim-leader-guide
+source $HOME/.config/nvim/leader-guide.vim
 
 let g:jsx_ext_required = 0
 " let g:jsx_pragma_required = 1
