@@ -43,7 +43,6 @@ Plug 'vim-scripts/CSApprox'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
-" Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
@@ -114,8 +113,16 @@ Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 " Plug 'thinca/vim-ref'
 " Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
 Plug 'slashmili/alchemist.vim'
+Plug 'tpope/vim-endwise'
 "" Elm
 Plug 'pbogut/deoplete-elm'
+
+"" ReasonML
+Plug 'reasonml-editor/vim-reason-plus'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
 " Editorconfig
 Plug 'sgur/vim-editorconfig'
@@ -236,7 +243,6 @@ endif
 
 " vim-airline
 " let g:airline_theme = 'powerlineish'
-let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
@@ -394,15 +400,6 @@ let g:UltiSnipsJumpForwardTrigger="<s-tab>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 let g:UltiSnipsEditSplit="vertical"
 
-" syntastic
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol = '✗'
-let g:syntastic_style_warning_symbol = '⚠'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_aggregate_errors = 1
-
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
@@ -469,12 +466,6 @@ let g:elm_format_autosave = 1
 " vim-polyglot
 let g:polyglot_disabled = ['elm']
 
-" syntastic
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:elm_syntastic_show_warnings = 1
-
-
 " html
 " for html files, 2 spaces
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
@@ -483,19 +474,29 @@ autocmd Filetype html setlocal ts=2 sw=2 expandtab
 " javascript
 let g:javascript_enable_domhtmlcss = 1
 
-" eslint for javascript
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
-" let g:syntastic_javascript_checkers = ['eslint']
-" let g:syntastic_javascript_eslint_exec = 'npm run lint --'
+" ReasonML
+let g:LanguageClient_serverCommands = {
+    \ 'reason': ['ocaml-language-server', '--stdio'],
+    \ 'ocaml': ['ocaml-language-server', '--stdio'],
+    \ }
 
 " Ale
-" Put this in vimrc or a plugin file of your own.
-" After this is configured, :ALEFix will try and fix your JS code with ESLint.
+let g:ale_linters = {
+\   'elixir': ['credo', 'dialyxir', 'elixirc'],
+\}
+
 let g:ale_fixers = {
 \   'elm': ['elm-format'],
+\   'elixir': ['mix_format'],
 \   'javascript': ['prettier', 'eslint'],
 \   'jsx': ['prettier', 'eslint'],
+\   'reason': ['refmt']
+\}
+
+" Do not lint or fix minified files.
+let g:ale_pattern_options = {
+\ '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
+\ '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
 \}
 
 " Set this setting in vimrc if you want to fix files automatically on save.
