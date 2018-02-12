@@ -8,15 +8,20 @@ vnoremap <silent> <leader> :<c-u>LeaderGuideVisual "<Space>"<CR>
 let g:lmap =  {}
 
 
-" f - file
-let g:lmap.f = { 'name' : 'file menu' }
+" F - file
+let g:lmap.F = { 'name' : 'File menu' }
 
-  nmap <silent> <leader>fd :e $myvimrc<cr>
-  let g:lmap.f.d = ['e $myvimrc', 'open vimrc']
+  nmap <silent> <leader>Fd :e ~/.config/nvim/init.vim<cr>
+  let g:lmap.F.d = ['e ~/.config/nvim/init.vim', 'init.vim edit']
 
-  nmap <silent> <leader>fs :so %<cr>
-  let g:lmap.f.s = ['so %', 'source file']
+  nmap <silent> <leader>Fk :e ~/.config/nvim/leader-guide.vim<cr>
+  let g:lmap.F.k = ['e ~/.config/nvim/leader-guide.vim', 'keymap edit']
 
+  nmap <silent> <leader>Fs :so %<cr>
+  let g:lmap.F.s = ['so %', 'source file']
+
+  nmap <silent> <leader>Fw :w<cr>
+  let g:lmap.F.w = ['w', 'write file']
 
 " o - open
 let g:lmap.o = { 'name' : 'open stuff' }
@@ -27,27 +32,23 @@ let g:lmap.o = { 'name' : 'open stuff' }
   nmap <silent> <leader>ol  :lopen<cr>
   let g:lmap.o.l = ['lopen', 'open locationlist']
 
-  nmap <silent> <leader>fw :w<cr>
-  let g:lmap.f.w = ['w', 'write file']
+" f - find
+let g:lmap.f = { 'name': 'find' }
 
+  nmap <silent> <leader>fa  :Ag<CR>
+  let g:lmap.f.a = ['Ag', 'Ag']
 
-" s - search
-let g:lmap.s = { 'name': 'search' }
+  nmap <silent> <leader>ff  :FZF -m<CR>
+  let g:lmap.f.f = ['FZF -m', 'file']
 
-  nmap <silent> <leader>sa  :Ag<CR>
-  let g:lmap.s.a = ['Ag', 'ag']
+  nmap <silent> <leader>fb  :Buffers<CR>
+  let g:lmap.f.b = ['Buffers', 'buffer']
 
-  nmap <silent> <leader>sf  :FZF -m<CR>
-  let g:lmap.s.f = ['FZF -m', 'file']
-
-  nmap <silent> <leader>sb  :Buffers<CR>
-  let g:lmap.s.b = ['Buffers', 'buffer']
-
-  nmap <silent> <leader>s<Space> :noh<CR>
-  let g:lmap.s.c = ['noh', 'clean search highlight']
+  nmap <silent> <leader>fc :noh<CR>
+  let g:lmap.f.c = ['noh', 'clean search highlight']
 
 " w
-let g:lmap.w = { 'name': 'window menu' }
+let g:lmap.w = { 'name': 'window' }
 
   nmap <silent> <leader>wh :split<CR>
   let g:lmap.w.h = ['split', 'horizontal split']
@@ -57,7 +58,7 @@ let g:lmap.w = { 'name': 'window menu' }
 
 
 " g - git
-let g:lmap.g = { 'name': 'git menu' }
+let g:lmap.g = { 'name': 'git' }
 let g:lmap.g.p = { 'name': 'push / pull' }
 
   nmap <silent> <leader>ga :Gwrite<CR>
@@ -107,13 +108,13 @@ let g:lmap.S = { 'name': 'Session' }
   let g:lmap.S.o = ['OpenSession', 'open']
 
   nmap <silent> <leader>Ss :SaveSession<Space>
-  let g:lmap.b.w = ['SaveSession', 'save']
+  let g:lmap.S.s = ['SaveSession', 'save']
 
   nmap <silent> <leader>Sd :DeleteSession<CR>
-  let g:lmap.b.c = ['DeleteSession', 'delete']
+  let g:lmap.S.d = ['DeleteSession', 'delete']
 
   nmap <silent> <leader>Sc :CloseSession<CR>
-  let g:lmap.b.c = ['CloseSession', 'close']
+  let g:lmap.S.c = ['CloseSession', 'close']
 
 " c - comments
 let g:lmap.c = { 
