@@ -35,13 +35,13 @@ let g:lmap.o = { 'name' : 'open stuff' }
 let g:lmap.s = { 'name': 'search' }
 
   nmap <silent> <leader>sg  :Denite grep -no-empty grep<CR>
-  let g:lmap.s.g = ['g', 'grep']
+  let g:lmap.s.g = ['Denite grep -no-empty grep', 'grep']
 
   nmap <silent> <leader>sf  :DeniteProjectDir file_rec<CR>
-  let g:lmap.s.f = ['f', 'file']
+  let g:lmap.s.f = ['DeniteProjectDir', 'file']
 
   nmap <silent> <leader>sb  :Denite buffer<CR>
-  let g:lmap.s.b = ['b', 'buffer']
+  let g:lmap.s.b = ['Denite buffer', 'buffer']
 
   nmap <silent> <leader>s<Space> :noh<CR>
   let g:lmap.s.c = ['noh', 'clean search highlight']
@@ -114,3 +114,8 @@ let g:lmap.S = { 'name': 'Session' }
 
   nmap <silent> <leader>Sc :CloseSession<CR>
   let g:lmap.b.c = ['CloseSession', 'close']
+
+" c - comments
+let g:lmap.c = { 
+      \ 'name': 'comments',
+      \ }
