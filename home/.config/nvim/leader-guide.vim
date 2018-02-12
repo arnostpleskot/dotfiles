@@ -34,14 +34,14 @@ let g:lmap.o = { 'name' : 'open stuff' }
 " s - search
 let g:lmap.s = { 'name': 'search' }
 
-  nmap <silent> <leader>sg  :Denite grep -no-empty grep<CR>
-  let g:lmap.s.g = ['Denite grep -no-empty grep', 'grep']
+  nmap <silent> <leader>sa  :Ag<CR>
+  let g:lmap.s.a = ['Ag', 'ag']
 
-  nmap <silent> <leader>sf  :DeniteProjectDir file_rec<CR>
-  let g:lmap.s.f = ['DeniteProjectDir', 'file']
+  nmap <silent> <leader>sf  :FZF -m<CR>
+  let g:lmap.s.f = ['FZF -m', 'file']
 
-  nmap <silent> <leader>sb  :Denite buffer<CR>
-  let g:lmap.s.b = ['Denite buffer', 'buffer']
+  nmap <silent> <leader>sb  :Buffers<CR>
+  let g:lmap.s.b = ['Buffers', 'buffer']
 
   nmap <silent> <leader>s<Space> :noh<CR>
   let g:lmap.s.c = ['noh', 'clean search highlight']
