@@ -5,7 +5,9 @@ vnoremap <silent> <leader> :<c-u>LeaderGuideVisual "<Space>"<CR>
 
 "" Dictonary
 " define prefix dictionary
-let g:lmap =  {}
+let g:lmap =  {
+  \' ': ['wa', 'write everything'],
+  \}
 
 
 " F - file
@@ -15,13 +17,22 @@ let g:lmap.F = { 'name' : 'File menu' }
   let g:lmap.F.d = ['e ~/.config/nvim/init.vim', 'init.vim edit']
 
   nmap <silent> <leader>Fk :e ~/.config/nvim/leader-guide.vim<cr>
-  let g:lmap.F.k = ['e ~/.config/nvim/leader-guide.vim', 'keymap edit']
+  let g:lmap.F.k = ['e ~/.config/nvim/keymap.vim', 'keymap edit']
 
-  nmap <silent> <leader>Fs :so %<cr>
-  let g:lmap.F.s = ['so %', 'source file']
+  nmap <silent> <leader>Fs :source ~/.config/nvim/init.vim<cr>
+  let g:lmap.F.s = ['source ~/.config/nvim/init.vim', 'source file']
 
   nmap <silent> <leader>Fw :w<cr>
   let g:lmap.F.w = ['w', 'write file']
+
+  nmap <silent> <leader>FW :wa<cr>
+  let g:lmap.F.W = ['wa', 'Write all files']
+
+  nmap <silent> <leader>Fq :qa<cr>
+  let g:lmap.F.q = ['q', 'quit nvim']
+
+  nmap <silent> <leader>FQ :qa!<cr>
+  let g:lmap.F.Q = ['qa!', 'force Quit nvim']
 
 " o - open
 let g:lmap.o = { 'name' : 'open stuff' }
@@ -100,6 +111,10 @@ let g:lmap.b = { 'name': 'buffer' }
 
   nmap <silent> <leader>bc :bd<CR>
   let g:lmap.b.c = ['bd', 'close']
+
+  "nmap <silent> <leader>ba :w|%bd|e#<CR>
+  "let g:lmap.b.a = ["w|%bd|e#", 'close all']
+
 
 " S - session
 let g:lmap.S = { 'name': 'Session' }
