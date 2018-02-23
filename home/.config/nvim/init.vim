@@ -471,6 +471,7 @@ let g:LanguageClient_serverCommands = {
     \ 'reason': ['ocaml-language-server', '--stdio'],
     \ 'ocaml': ['ocaml-language-server', '--stdio'],
     \ }
+let g:LanguageClient_diagnosticsEnable = 0
 
 " Ale
 let g:ale_linters = {
