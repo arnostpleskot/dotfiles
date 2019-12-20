@@ -1,1 +1,0 @@
-/Users/arnost/.config/fisherman/await/functions/await.fish

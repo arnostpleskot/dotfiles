@@ -1,1 +1,0 @@
-/Users/arnost/.config/fisherman/get/functions/get.fish
