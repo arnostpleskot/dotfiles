@@ -1,0 +1,9 @@
+{
+  "diagnostic.enable": false,
+  "languageserver": {
+     "reason": {
+      "command": "reason-language-server",
+      "filetypes": ["reason"]
+     }
+  }
+}

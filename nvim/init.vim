@@ -46,8 +46,8 @@ source $HOME/.config/nvim/coc.vim
 
 " vim-smartclose
 let g:smartclose_set_default_mapping = 1
-let g:smartclose_default_mapping_key = 'q'
-nnoremap q :SmartClose<CR>
+let g:smartclose_set_mapping_with_bang = 0
+nnoremap <silent>q :SmartClose<CR>
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -65,7 +65,12 @@ set nobackup
 set noswapfile
 
 set fileformats=unix,dos,mac
-set showcmd
+
+" don't show currently clicked command keys
+set noshowcmd
+
+" don't change pwd on file change
+set noautochdir
 
 " tagbar
 nmap <F8> :TagbarToggle<CR>
@@ -180,6 +185,7 @@ set autowriteall
 "" ALE
 let g:ale_linters = {
 \  'javascript': ['eslint', 'fecs', 'jscs', 'jshint', 'standard', 'xo'],
+\  'reason': ['reason-language-server']
 \}
 
 let g:ale_fixers = {
@@ -195,6 +201,8 @@ let g:ale_pattern_options = {
 \ '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
 \ '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
 \}
+
+let g:ale_reason_ls_executable = '/usr/local/bin/reason-language-server'
 
 " Set this setting in vimrc if you want to fix files automatically on save.
 " This is off by default.
