@@ -24,3 +24,11 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Generated configs
+configstore/
+
+# Dependencies
+node_modules/
+plugged/
+kitty/kitty-themes/themes/
