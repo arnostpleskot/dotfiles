@@ -14,15 +14,13 @@ call plug#begin()
   Plug 'tpope/vim-fugitive'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'iberianpig/ranger-explorer.vim'
-  Plug 'rbgrouleff/bclose.vim'
   Plug 'ryanoasis/vim-devicons'
   Plug 'mhinz/vim-startify'
   Plug 'majutsushi/tagbar'
   Plug 'Yggdroot/indentLine'
   Plug 'dense-analysis/ale'
   Plug 'scrooloose/nerdcommenter'
-  "Plug 'vim-scripts/vim-auto-save'
-  Plug 'szw/vim-smartclose'
+  Plug 'moll/vim-bbye'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
   Plug 'tpope/vim-surround'
@@ -44,10 +42,11 @@ source $HOME/.config/nvim/coc.vim
 "let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 "let g:auto_save_silent = 1  " do not display the auto-save notification
 
-" vim-smartclose
-let g:smartclose_set_default_mapping = 1
-let g:smartclose_set_mapping_with_bang = 0
-nnoremap <silent>q :SmartClose<CR>
+" vim-bbye
+nnoremap <silent>q :Bwipeout<CR>
+" remap :Bclose command for ranger
+command! -bang -complete=buffer -nargs=? Bclose Bdelete<bang> <args>
+
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
