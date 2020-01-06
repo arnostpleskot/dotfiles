@@ -7,13 +7,14 @@ set nocompatible
 let g:polyglot_disabled = ['typescript']
 
 call plug#begin()
-  Plug 'vim-ctrlspace/vim-ctrlspace'
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'vim-airline/vim-airline'
   Plug 'sheerun/vim-polyglot'
   Plug 'tpope/vim-fugitive'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'iberianpig/ranger-explorer.vim'
+  Plug 'francoiscabrol/ranger.vim'
+  " Dependency for ranger.vim providing :Bclose function
+  Plug 'rbgrouleff/bclose.vim'
   Plug 'ryanoasis/vim-devicons'
   Plug 'mhinz/vim-startify'
   Plug 'majutsushi/tagbar'
@@ -27,8 +28,9 @@ call plug#begin()
   Plug 'cohama/lexima.vim'
   Plug 'airblade/vim-gitgutter'
   Plug 'frazrepo/vim-rainbow'
-  Plug 'mileszs/ack.vim'
-
+  Plug 'arnostpleskot/vim-smartclose'
+  Plug 'ap/vim-css-color'
+  Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 call plug#end()
 
 filetype plugin on
@@ -36,17 +38,16 @@ filetype plugin on
 " coc config
 source $HOME/.config/nvim/coc.vim
 
-" auto-save
-"let g:auto_save = 0  " enable AutoSave on Vim startup
-"let g:auto_save_no_updatetime = 0  " do not change the 'updatetime' option
-"let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
-"let g:auto_save_silent = 1  " do not display the auto-save notification
+"" Map leader to <SPACE>
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
 
-" vim-bbye
-nnoremap <silent>q :Bwipeout<CR>
-" remap :Bclose command for ranger
-command! -bang -complete=buffer -nargs=? Bclose Bdelete<bang> <args>
+" leaderf config
+source $HOME/.config/nvim/leaderf.vim
 
+" vim-smartclose
+nnoremap <silent>q :SmartClose<CR>
+let g:smartclose_set_default_mapping = 0
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -54,10 +55,6 @@ set softtabstop=0
 set shiftwidth=2
 set expandtab
 set smarttab
-
-"" Map leader to <SPACE>
-nnoremap <SPACE> <Nop>
-let mapleader="\<Space>"
 
 "" Directories for swp files
 set nobackup
@@ -80,9 +77,6 @@ let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
 
-" needed for vim-ctrlspace/vim-ctrlspace
-set hidden
-
 "" Copy/Paste/Cut
 if has('unnamedplus')
   set clipboard=unnamed,unnamedplus
@@ -103,28 +97,16 @@ vmap < <gv
 vmap > >gv
 
 " Ranger
-silent! map <F2> :RangerOpenProjectRootDir<CR>
-silent! map <F3> :RangerOpenCurrentDir<CR>
+" disable default mappings
+let g:ranger_map_keys = 0
+silent! map <F2> :RangerWorkingDirectory<CR>
+silent! map <F3> :Ranger<CR>
 
 " Switching windows
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
-
-" ctrlspace key mapping
-let g:CtrlSpaceDefaultMappingKey = "<C-space> "
-nnoremap <silent><C-p> :CtrlSpace O<CR>
-
-" Use ag in ack
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
-
-" Use ag in ctrlspace
-if executable("ag")
-    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
-endif
 
 "" VISUAL SETTINGS
 syntax on
@@ -169,6 +151,13 @@ set nowrap
 
 " Get rid of | cahracter in vertical split bar (https://stackoverflow.com/questions/9001337/vim-split-bar-styling)
 set fillchars+=vert:\ " Keep line
+
+" Yggdroot/indentLine
+" Disable indent lines in Startify
+let g:indentLine_fileTypeExclude = [ 'startify' ]
+
+" Hide ~ on blank lines
+set fcs=eob:\ " comment to keep line
 
 " Set proper background color
 set termguicolors
