@@ -121,3 +121,5 @@ eval "`fnm env --multi --use-on-cd`"
 export EDITOR=nvim
 
 alias n='nvim'
+alias cat='bat'
+alias MD='glow'
