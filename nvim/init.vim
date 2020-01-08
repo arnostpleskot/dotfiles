@@ -108,14 +108,19 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
+" Startify
+let g:startify_change_to_dir = 0
+
+" some conventional key bidings
+nnoremap <silent> <leader>- :split<CR>
+nnoremap <silent> <leader>\ :vsplit<CR>
+nnoremap <silent> <C-S> :wa<CR>
+
 "" VISUAL SETTINGS
 syntax on
 set ruler
 set number relativenumber
 set encoding=UTF-8
-
-nnoremap <leader>- :split<CR>
-nnoremap <leader>\ :vsplit<CR>
 
 " vim-airline
 
