@@ -154,15 +154,15 @@ set noshowmode
 " Don't break long lines
 set nowrap
 
-" Get rid of | cahracter in vertical split bar (https://stackoverflow.com/questions/9001337/vim-split-bar-styling)
-set fillchars+=vert:\ " Keep line
-
 " Yggdroot/indentLine
 " Disable indent lines in Startify
 let g:indentLine_fileTypeExclude = [ 'startify' ]
 
 " Hide ~ on blank lines
 set fcs=eob:\ " comment to keep line
+
+" Get rid of | cahracter in vertical split bar (https://stackoverflow.com/questions/9001337/vim-split-bar-styling)
+set fillchars+=vert:\ " Keep line
 
 " Set proper background color
 set termguicolors
