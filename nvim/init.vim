@@ -24,13 +24,14 @@ call plug#begin()
   Plug 'moll/vim-bbye'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
-  Plug 'tpope/vim-surround'
   Plug 'cohama/lexima.vim'
   Plug 'airblade/vim-gitgutter'
   Plug 'frazrepo/vim-rainbow'
   Plug 'arnostpleskot/vim-smartclose'
   Plug 'ap/vim-css-color'
   Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+  Plug 'easymotion/vim-easymotion'
+  Plug 'machakann/vim-sandwich'
 call plug#end()
 
 filetype plugin on
@@ -110,6 +111,19 @@ noremap <C-h> <C-w>h
 
 " Startify
 let g:startify_change_to_dir = 0
+
+" Easymotion
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_use_smartsign_us = 1 " Smartsign (type `3` and match `3`&`#`)
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" `s{char}{label}`
+"nmap s <Plug>(easymotion-overwin-f)
+nmap <leader><leader> <Plug>(easymotion-overwin-f)
+" Turn on case-insensitive feature
+let g:EasyMotion_smartcase = 1
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 " some conventional key bidings
 nnoremap <silent> <leader>- :split<CR>
