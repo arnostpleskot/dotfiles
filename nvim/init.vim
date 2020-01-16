@@ -187,6 +187,10 @@ set mousemodel=popup
 set mouse=a
 set autowriteall
 
+set cursorline
+hi CursorLine guibg=#363948
+hi CursorLineNr guifg=#bd93f9 guibg=#363948
+
 
 "" ALE
 let g:ale_linters = {
