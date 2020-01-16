@@ -21,7 +21,6 @@ call plug#begin()
   Plug 'Yggdroot/indentLine'
   Plug 'dense-analysis/ale'
   Plug 'scrooloose/nerdcommenter'
-  Plug 'moll/vim-bbye'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
   Plug 'cohama/lexima.vim'
