@@ -1,5 +1,10 @@
 {
-  "diagnostic.enable": false,
+  "diagnostic.hintSign": ">>",
+  "diagnostic.infoSign": "🛈",
+  "diagnostic.warningSign": "➤",
+  "diagnostic.errorSign": "✖",
+  "diagnostic.virtualText": true,
+  "diagnostic.checkCurrentLine": true,
   "languageserver": {
      "reason": {
       "command": "reason-language-server",

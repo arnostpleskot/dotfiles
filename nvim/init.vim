@@ -5,6 +5,7 @@ set nocompatible
 
 " Disable typescript from vim-polyglot to prevent `E700: Unknown function: GetJavascriptIndent` error
 let g:polyglot_disabled = ['typescript']
+" let g:polyglot_disabled = ['typescript', 'javascript', 'jsx']
 
 call plug#begin()
   Plug 'dracula/vim', { 'as': 'dracula' }
@@ -19,7 +20,6 @@ call plug#begin()
   Plug 'mhinz/vim-startify'
   Plug 'majutsushi/tagbar'
   Plug 'Yggdroot/indentLine'
-  Plug 'dense-analysis/ale'
   Plug 'scrooloose/nerdcommenter'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
@@ -31,6 +31,7 @@ call plug#begin()
   Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
   Plug 'easymotion/vim-easymotion'
   Plug 'machakann/vim-sandwich'
+  " Plug 'neoclide/vim-jsx-improve'
 call plug#end()
 
 filetype plugin on
@@ -48,6 +49,11 @@ source $HOME/.config/nvim/leaderf.vim
 " vim-smartclose
 nnoremap <silent>q :SmartClose<CR>
 let g:smartclose_set_default_mapping = 0
+
+" vim-nerdcommenter
+let g:NERDSpaceDelims = 1
+let g:NERDDefaultAlign = 'left'
+map <C-\> <Plug>NERDCommenterToggle('n', 'Toggle')<Cr>
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -85,12 +91,6 @@ endif
 noremap YY "+y<CR>
 noremap <C-p> "+gP<CR>
 noremap XX "+x<CR>
-
-if has('macunix')
-  " pbcopy for OSX copy/paste
-  vmap <C-x> :!pbcopy<CR>
-  vmap <C-c> :w !pbcopy<CR><CR>
-endif
 
 "" Vmap for maintain Visual Mode after shifting > and <
 vmap < <gv
@@ -139,7 +139,6 @@ set encoding=UTF-8
 
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 0
 let g:airline_skip_empty_sections = 1
 
@@ -190,43 +189,6 @@ set autowriteall
 set cursorline
 hi CursorLine guibg=#363948
 hi CursorLineNr guifg=#bd93f9 guibg=#363948
-
-
-"" ALE
-let g:ale_linters = {
-\  'javascript': ['eslint', 'fecs', 'jscs', 'jshint', 'standard', 'xo'],
-\  'reason': ['reason-language-server']
-\}
-
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['prettier', 'eslint'],
-\   'jsx': ['prettier', 'eslint'],
-\   'reason': ['refmt'],
-\   'typescriptreact': ['prettier', 'eslint'],
-\}
-
-" Do not lint or fix minified files.
-let g:ale_pattern_options = {
-\ '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
-\ '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
-\}
-
-let g:ale_reason_ls_executable = '/usr/local/bin/reason-language-server'
-
-" Set this setting in vimrc if you want to fix files automatically on save.
-" This is off by default.
-let g:ale_fix_on_save = 1
-let g:ale_lint_on_save = 1
-
-
-let g:ale_echo_msg_error_str = 'Error'
-let g:ale_echo_msg_warning_str = 'Warning'
-let g:ale_echo_msg_format = '%severity%: [%linter%] %s'
-
-let g:ale_sign_error = '✖'
-let g:ale_sign_warning = '➤'
-let g:ale_sign_info = '🛈'
 
 " Put these lines at the very end of your vimrc file.
 

@@ -32,3 +32,4 @@ configstore/
 node_modules/
 plugged/
 kitty/kitty-themes/themes/
+coc/extensions/

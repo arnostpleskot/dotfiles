@@ -10,7 +10,7 @@ let g:Lf_PreviewInPopup = 1
 let g:Lf_StlSeparator = { 'left': "", 'right': "" }
 let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
 
-noremap <silent> <leader>r :<C-U><C-R>=printf("Leaderf rg")<CR><CR>
+noremap <leader>r :<C-U><C-R>=printf("Leaderf! rg -e ")<CR>
 noremap <silent> <C-space> :<C-U><C-R>=printf("LeaderfBuffer")<CR><CR>
 "noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
 "noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
