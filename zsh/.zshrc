@@ -76,6 +76,7 @@ plugins=(
   npm
   osx
   z
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -123,3 +124,4 @@ export EDITOR=nvim
 alias n='nvim'
 alias cat='bat'
 alias MD='glow'
+alias ls='exa'
