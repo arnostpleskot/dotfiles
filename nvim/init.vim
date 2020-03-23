@@ -53,7 +53,8 @@ let g:smartclose_set_default_mapping = 0
 " vim-nerdcommenter
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
-map <C-\> <Plug>NERDCommenterToggle('n', 'Toggle')<Cr>
+nmap <C-_> <Plug>NERDCommenterToggle<CR>
+vmap <C-_>   <Plug>NERDCommenterToggle<CR>gv
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
