@@ -3,10 +3,6 @@
 call shellescape("fnm use nvim")
 set nocompatible
 
-" Disable typescript from vim-polyglot to prevent `E700: Unknown function: GetJavascriptIndent` error
-let g:polyglot_disabled = ['typescript']
-" let g:polyglot_disabled = ['typescript', 'javascript', 'jsx']
-
 call plug#begin()
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'vim-airline/vim-airline'
@@ -24,14 +20,12 @@ call plug#begin()
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
   Plug 'cohama/lexima.vim'
-  Plug 'airblade/vim-gitgutter'
   Plug 'frazrepo/vim-rainbow'
   Plug 'arnostpleskot/vim-smartclose'
   Plug 'ap/vim-css-color'
   Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
   Plug 'easymotion/vim-easymotion'
   Plug 'machakann/vim-sandwich'
-  " Plug 'neoclide/vim-jsx-improve'
 call plug#end()
 
 filetype plugin on
