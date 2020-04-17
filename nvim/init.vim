@@ -103,8 +103,16 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
+" Switching vertical layout to _h_orizontal
+noremap <leader>h <C-w>K
+" Switching horizontal layout to _v_ertical
+noremap <leader>v <C-w>H
+
+silent! noremap <F12> :syntax sync fromstart<CR>
+
 " Startify
 let g:startify_change_to_dir = 0
+silent! nmap <F1> :Startify<CR>
 
 " Easymotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -129,6 +137,8 @@ syntax on
 set ruler
 set number relativenumber
 set encoding=UTF-8
+" increase redrawtime to fix syntax in long and complex files
+set redrawtime=10000
 
 " vim-airline
 
@@ -164,6 +174,7 @@ set nowrap
 " Yggdroot/indentLine
 " Disable indent lines in Startify
 let g:indentLine_fileTypeExclude = [ 'startify' ]
+autocmd TermEnter * IndentLinesDisable
 
 " Hide ~ on blank lines
 set fcs=eob:\ " comment to keep line
