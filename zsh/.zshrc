@@ -77,6 +77,7 @@ plugins=(
   osx
   z
   zsh-syntax-highlighting
+  dotnet
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -120,6 +121,7 @@ kitty + complete setup zsh | source /dev/stdin
 eval "`fnm env --multi --use-on-cd`"
 
 export EDITOR=nvim
+export MONO_GAC_PREFIX="/usr/local"
 
 alias n='nvim'
 alias cat='bat'
