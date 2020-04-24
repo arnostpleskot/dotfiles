@@ -21,13 +21,12 @@ call plug#begin()
   Plug 'scrooloose/nerdcommenter'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
-  Plug 'cohama/lexima.vim'
   Plug 'frazrepo/vim-rainbow'
   Plug 'arnostpleskot/vim-smartclose'
-  Plug 'ap/vim-css-color'
   Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
   Plug 'easymotion/vim-easymotion'
   Plug 'machakann/vim-sandwich'
+  Plug 'metakirby5/codi.vim'
 call plug#end()
 
 filetype plugin on
@@ -166,6 +165,9 @@ let g:airline_symbols.whitespace = 'Ξ'
 let g:airline_symbols.branch = ''
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.linenr = ''
+
+" Disable airline section
+let g:airline_section_z=''
 
 " Don't show current mode in cmd line
 set noshowmode
