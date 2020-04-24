@@ -3,6 +3,8 @@
 call shellescape("fnm use nvim")
 set nocompatible
 
+let g:polyglot_disabled = ['yaml']
+
 call plug#begin()
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'vim-airline/vim-airline'
