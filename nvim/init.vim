@@ -187,6 +187,8 @@ set termguicolors
 
 colorscheme dracula
 
+highlight Comment cterm=italic gui=italic
+
 "" MOUSE
 set mousemodel=popup
 set mouse=a
