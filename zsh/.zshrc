@@ -78,6 +78,7 @@ plugins=(
   z
   zsh-syntax-highlighting
   dotnet
+  kubectl
 )
 
 source $ZSH/oh-my-zsh.sh
