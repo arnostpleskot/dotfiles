@@ -6,14 +6,27 @@
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextLineSeparator": "||",
   "languageserver": {
-     "reason": {
+    "reason": {
       "command": "reason-language-server",
       "filetypes": ["reason"]
-     }
+    }
   },
   "suggest.removeDuplicateItems": true,
-  "coc.preferences.formatOnSaveFiletypes": ["css", "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "graphql"],
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "json",
+    "graphql"
+  ],
   "eslint.enable": true,
   "eslint.autoFixOnSave": false,
-  "git.addGBlameToVirtualText": true
+  "git.addGBlameToVirtualText": true,
+  "git.removedSign.text": "−",
+  "git.removedSign.hlGroup": "DraculaError",
+  "yaml.schemas": {
+    "kubernetes": "/*.yaml"
+  }
 }
