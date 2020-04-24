@@ -680,7 +680,7 @@
   # Vim shell indicator color.
   typeset -g POWERLEVEL9K_VIM_SHELL_FOREGROUND=34
   # Custom icon.
-  # typeset -g POWERLEVEL9K_VIM_SHELL_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_VIM_SHELL_VISUAL_IDENTIFIER_EXPANSION=''
 
   ######[ midnight_commander: midnight commander shell (https://midnight-commander.org/) ]######
   # Midnight Commander shell color.
@@ -715,7 +715,7 @@
   # RAM color.
   typeset -g POWERLEVEL9K_RAM_FOREGROUND=66
   # Custom icon.
-  typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION=''
+  typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION='﬘'
 
   #####################################[ swap: used swap ]######################################
   # Swap color.
@@ -733,7 +733,7 @@
   # Load color when load is over 70%.
   typeset -g POWERLEVEL9K_LOAD_CRITICAL_FOREGROUND=166
   # Custom icon.
-  typeset -g POWERLEVEL9K_LOAD_VISUAL_IDENTIFIER_EXPANSION=''
+  typeset -g POWERLEVEL9K_LOAD_VISUAL_IDENTIFIER_EXPANSION=''
 
   ################[ todo: todo items (https://github.com/todotxt/todo.txt-cli) ]################
   # Todo color.
