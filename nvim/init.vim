@@ -16,17 +16,20 @@ call plug#begin()
   Plug 'rbgrouleff/bclose.vim'
   Plug 'ryanoasis/vim-devicons'
   Plug 'mhinz/vim-startify'
-  Plug 'majutsushi/tagbar'
   Plug 'Yggdroot/indentLine'
   Plug 'scrooloose/nerdcommenter'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'editorconfig/editorconfig-vim'
   Plug 'frazrepo/vim-rainbow'
-  Plug 'arnostpleskot/vim-smartclose'
   Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
   Plug 'easymotion/vim-easymotion'
   Plug 'machakann/vim-sandwich'
   Plug 'metakirby5/codi.vim'
+  Plug 'tpope/vim-abolish'
+  Plug 'alvan/vim-closetag'
+  Plug 'vim-test/vim-test'
+  Plug 'puremourning/vimspector'
+  Plug 'chrisbra/nrrwrgn'
 call plug#end()
 
 filetype plugin on
@@ -42,7 +45,7 @@ let mapleader="\<Space>"
 source $HOME/.config/nvim/leaderf.vim
 
 " vim-smartclose
-nnoremap <silent>q :SmartClose<CR>
+nnoremap <silent>q :q<CR>
 let g:smartclose_set_default_mapping = 0
 
 " vim-nerdcommenter
@@ -69,9 +72,6 @@ set noshowcmd
 
 " don't change pwd on file change
 set noautochdir
-
-" tagbar
-nmap <F8> :TagbarToggle<CR>
 
 " session management
 let g:session_directory = "~/.config/nvim/session"
@@ -112,8 +112,7 @@ noremap <leader>v <C-w>H
 silent! noremap <F12> :syntax sync fromstart<CR>
 
 " Startify
-let g:startify_change_to_dir = 0
-silent! nmap <F1> :Startify<CR>
+source $HOME/.config/nvim/startify.vim
 
 " Easymotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -138,6 +137,7 @@ syntax on
 set ruler
 set number relativenumber
 set encoding=UTF-8
+set colorcolumn=0
 " increase redrawtime to fix syntax in long and complex files
 set redrawtime=10000
 
@@ -178,6 +178,7 @@ set nowrap
 " Yggdroot/indentLine
 " Disable indent lines in Startify
 let g:indentLine_fileTypeExclude = [ 'startify' ]
+let g:indentLine_char = '▏'
 autocmd TermEnter * IndentLinesDisable
 
 " Hide ~ on blank lines

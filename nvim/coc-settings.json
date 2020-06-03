@@ -24,9 +24,8 @@
   "eslint.enable": true,
   "eslint.autoFixOnSave": false,
   "git.addGBlameToVirtualText": true,
-  "git.removedSign.text": "−",
-  "git.removedSign.hlGroup": "DraculaError",
   "yaml.schemas": {
-    "kubernetes": "/*.yaml"
+    "kubernetes": "/*.yaml",
+    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json": "/docs/*.yaml"
   }
 }
