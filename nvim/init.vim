@@ -6,7 +6,7 @@ set nocompatible
 let g:polyglot_disabled = ['yaml']
 
 call plug#begin()
-  Plug 'dracula/vim', { 'as': 'dracula' }
+  Plug 'danilo-augusto/vim-afterglow'
   Plug 'vim-airline/vim-airline'
   Plug 'sheerun/vim-polyglot'
   Plug 'tpope/vim-fugitive'
@@ -190,7 +190,12 @@ set fillchars+=vert:\ " Keep line
 " Set proper background color
 set termguicolors
 
-colorscheme dracula
+" Color scheme
+let g:afterglow_italic_comments=1
+let g:afterglow_blackout=1
+let g:afterglow_inherit_background=1
+
+colorscheme afterglow
 
 highlight Comment cterm=italic gui=italic
 
@@ -200,8 +205,11 @@ set mouse=a
 set autowriteall
 
 set cursorline
-hi CursorLine guibg=#363948
-hi CursorLineNr guifg=#bd93f9 guibg=#363948
+hi CursorLine guibg=#393939
+hi CursorLineNr guibg=#393939
+
+" vim-test
+let g:test#javascript#mocha#file_pattern = '\vtests?/.*\.(js|jsx|coffee|ts|tsx)$'
 
 " Put these lines at the very end of your vimrc file.
 
