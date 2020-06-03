@@ -77,7 +77,7 @@ plugins=(
   osx
   z
   zsh-syntax-highlighting
-  dotnet
+  # dotnet
   kubectl
 )
 
@@ -116,15 +116,42 @@ export LC_ALL=en_US.UTF-8
 
 autoload -Uz compinit
 compinit
+
 # Completion for kitty
 kitty + complete setup zsh | source /dev/stdin
+
+# Completion for gh (github shell)
+gh completion -s zsh | source /dev/stdin
 
 eval "`fnm env --multi --use-on-cd`"
 
 export EDITOR=nvim
 export MONO_GAC_PREFIX="/usr/local"
+export XDG_CONFIG_HOME="$HOME/.config"
 
 alias n='nvim'
 alias cat='bat'
+alias man='batman'
 alias MD='glow'
-alias ls='exa'
+alias ls='exa -lah --icons'
+alias r='ranger'
+alias ry='brew services restart yabai'
+alias rs='brew services restart skhd'
+alias rys='ry && rs'
+
+mktouch() {
+    if [ $# -lt 1 ]; then
+        echo "Missing argument";
+        return 1;
+    fi
+
+    for f in "$@"; do
+        mkdir -p -- "$(dirname -- "$f")"
+        touch -- "$f"
+    done
+}
+
+fd() {
+  preview="git diff $@ --color=always -- {-1}"
+  git diff $@ --name-only | fzf -m --ansi --preview $preview
+}
