@@ -4,3 +4,6 @@
 [submodule "Applications/dmenu"]
 	path = Applications/dmenu
 	url = git@github.com:arnostpleskot/dmenu.git
+[submodule "Applications/dwm"]
+	path = Applications/dwm
+	url = git@github.com:arnostpleskot/dwm.git
