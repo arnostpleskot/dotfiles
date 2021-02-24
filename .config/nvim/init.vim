@@ -30,10 +30,7 @@ call plug#begin()
   Plug 'alvan/vim-closetag'
   Plug 'vim-test/vim-test'
   Plug 'puremourning/vimspector'
-  Plug 'chrisbra/nrrwrgn'
-  Plug 'christoomey/vim-conflicted'
-  Plug 'vim-scripts/dbext.vim'
-  Plug 'tbo/notion'
+  Plug 'mbbill/undotree'
 call plug#end()
 
 let g:coc_global_extensions = [
@@ -107,6 +104,8 @@ set shiftwidth=2
 set expandtab
 set smarttab
 
+set smartindent
+
 "" Directories for swp files
 set nobackup
 set noswapfile
@@ -114,7 +113,7 @@ set noswapfile
 set fileformats=unix,dos,mac
 
 " don't show currently clicked command keys
-set noshowcmd
+" set noshowcmd
 
 " don't change pwd on file change
 set noautochdir
@@ -122,20 +121,40 @@ set noautochdir
 " command mode behavior
 set wildmenu
 
+" search
+set nohlsearch
+set incsearch
+
 " search case
 set ignorecase
 set smartcase
+
+set noerrorbells
+
+" undo
+set undodir=~/.vim/undodir
+set undofile
+
+" scroll offset
+set scrolloff=8
+
+" visual settings
+syntax on
+set ruler
+set number relativenumber
+set encoding=UTF-8
+set colorcolumn=0
+" increase redrawtime to fix syntax in long and complex files
+set redrawtime=10000
+
+set hidden
+
 
 " session management
 let g:session_directory = "~/.config/nvim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
-
-" notion
-hi NotionLabel guifg=red guibg=black ctermfg=red ctermbg=black
-
-nmap <silent> x :NotionJump<CR>
 
 "" Copy/Paste/Cut
 if has('unnamedplus')
@@ -186,17 +205,8 @@ nnoremap <silent> <C-S> :wa<CR>
 noremap <A-h> g^
 noremap <A-l> g$
 
-" Search
-set smartcase
-
-"" VISUAL SETTINGS
-syntax on
-set ruler
-set number relativenumber
-set encoding=UTF-8
-set colorcolumn=0
-" increase redrawtime to fix syntax in long and complex files
-set redrawtime=10000
+" undotree
+nnoremap <F5> :UndotreeToggle<CR>
 
 " vim-lightline
 let g:lightline = {
