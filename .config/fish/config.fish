@@ -38,6 +38,10 @@ alias man='batman'
 alias f="fzf "$FZF_PREVIEW_OPTS""
 alias ssh="TERM=xterm /usr/bin/ssh"
 alias suspend="systemctl suspend"
+alias layout_us="setxkbmap -layout us && xmodmap ~/.Xmodmap"
+alias layout_cs="setxkbmap -layout cz && xmodmap ~/.Xmodmap"
+
+# dotfiles management: https://www.atlassian.com/git/tutorials/dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 # ABREVATIONS
@@ -58,7 +62,7 @@ if not set -q fish_initialized
   abbr -a gm git merge
   abbr -a gps git push
   abbr -a gpl git pull
-  abbr -a c curl -LO -C -
+  abbr -a c config
 end
 
 # Theme
