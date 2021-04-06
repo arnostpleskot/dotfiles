@@ -31,6 +31,7 @@ call plug#begin()
   Plug 'vim-test/vim-test'
   Plug 'puremourning/vimspector'
   Plug 'mbbill/undotree'
+  Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 let g:coc_global_extensions = [
@@ -208,6 +209,8 @@ noremap <A-l> g$
 " undotree
 nnoremap <F5> :UndotreeToggle<CR>
 
+source $HOME/.config/nvim/colemak.vim
+
 " vim-lightline
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
@@ -275,6 +278,4 @@ packloadall
 " Load all of the helptags now, after plugins have been loaded.
 " All messages and errors will be ignored.
 silent! helptags ALL
-
-" DB config
 
