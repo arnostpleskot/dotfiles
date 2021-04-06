@@ -4,6 +4,16 @@ kitty + complete setup fish | source
 # fnm
 # set PATH /home/arnost/.fnm $PATH
 fnm env | source
+
+function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
+    status --is-command-substitution; and return
+    if test -f .node-version -o -f .nvmrc
+        fnm use
+    end
+end
+
+_fnm_autoload_hook
+
 fnm completions | source
 
 # PATH
