@@ -31,6 +31,12 @@ map <leader>n <Plug>(easymotion-j)
 map <leader>e <Plug>(easymotion-k)
 map <Leader>i <Plug>(easymotion-lineforward)
 
+" switching panels
+noremap <C-m> <C-w>h
+noremap <C-n> <C-w>j
+noremap <C-e> <C-w>k
+noremap <C-i> <C-w>l
+
 " below: not remapping, just fixing sequences:
 " fix (i)nner and (t)ill, e.g. (c)hange (i)n (w)ord
 nnoremap ci ci|
@@ -41,3 +47,7 @@ nnoremap ct ct|
 nnoremap dt dt|
 nnoremap vt vt|
 nnoremap yt yt|
+
+" Move cursor on start/end of line
+noremap <A-m> g^
+noremap <A-i> g$
