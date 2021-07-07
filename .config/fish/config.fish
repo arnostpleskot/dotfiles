@@ -1,6 +1,3 @@
-# kitty
-kitty + complete setup fish | source
-
 # fnm
 # set PATH /home/arnost/.fnm $PATH
 fnm env | source
@@ -11,8 +8,6 @@ function _fnm_autoload_hook --on-variable PWD --description 'Change Node version
         fnm use
     end
 end
-
-_fnm_autoload_hook
 
 fnm completions | source
 
@@ -27,6 +22,8 @@ set PATH /home/arnost/.gem/ruby/2.7.0/bin $PATH
 set -g -x _JAVA_AWT_WM_NONREPARENTING 1
 
 set -g -x EDITOR nvim
+set -x GPG_TTY (tty)
+set -x -g GTK_THEME Adwaita:dark
 
 # FZF
 
@@ -50,8 +47,23 @@ alias ssh="TERM=xterm /usr/bin/ssh"
 alias suspend="systemctl suspend"
 alias layout_us="setxkbmap -layout us && xmodmap ~/.Xmodmap"
 alias layout_cs="setxkbmap -layout cz && xmodmap ~/.Xmodmap"
+alias disk_usage="df -h -t btrfs"
+alias spotify="ncmpcpp"
 
-# dotfiles management: https://www.atlassian.com/git/tutorials/dotfiles
+## DOCKER
+# Stop/kill all running containers.
+alias dockerkillall='docker kill (docker ps -q)'
+# Delete stopped containers.
+alias dockercleanc='printf "\n===> Deleting stopped containers\n\n" && docker rm (docker ps -a -q)'
+# Delete untagged images.
+alias dockercleanimages='printf "\n===> Deleting untagged images\n\n" && docker rmi (docker images --filter "dangling=true" -q --no-trunc)'
+# Delete dangling volumes
+alias dockercleanvolumes='printf "\n===> Deleting dangling volumes\n\n" && docker volume rm (docker volume ls -qf dangling=true)'
+# Delete all untagged images and dangling volumes.
+alias dockerclean='dockercleanimages || true && dockercleanvolumes'
+
+## DOTFILES MANAGEMENT
+# https://www.atlassian.com/git/tutorials/dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 # ABREVATIONS
@@ -73,12 +85,15 @@ if not set -q fish_initialized
   abbr -a gps git push
   abbr -a gpl git pull
   abbr -a c config
+  abbr -a sls pactl list short sinks
+  abbr -a sset pactl set-default-sink
 end
 
 # Theme
 # Set theme only for interactive terminal: https://github.com/Jomik/fish-gruvbox/issues/3#issuecomment-712656458
 if status --is-interactive
   theme_gruvbox dark medium
+  _fnm_autoload_hook
 end
 
 # Starship prompt
