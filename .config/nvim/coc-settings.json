@@ -23,10 +23,9 @@
     "json",
     "graphql"
   ],
-  "eslint.enable": true,
-  "eslint.autoFixOnSave": false,
-  "eslint.autoFix": false,
-  "prettier.requireConfig": true,
-  "prettier.onlyUseLocalVersion": true,
-  "git.addGBlameToVirtualText": true
+  "eslint.autoFixOnSave": true,
+  // "prettier.requireConfig": true,
+  // "prettier.onlyUseLocalVersion": true,
+  "git.addGBlameToVirtualText": true,
+  "Lua.workspace.preloadFileSize": 500
 }

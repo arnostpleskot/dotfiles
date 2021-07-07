@@ -10,11 +10,7 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'
   Plug 'sheerun/vim-polyglot'
   Plug 'tpope/vim-fugitive'
-  Plug 'junegunn/fzf', {'dir': '~/.fzf','do': './install --all'}
-  Plug 'junegunn/fzf.vim' 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
-  Plug 'pbogut/fzf-mru.vim'
   Plug 'francoiscabrol/ranger.vim'
   " Dependency for ranger.vim providing :Bclose function
   Plug 'rbgrouleff/bclose.vim'
@@ -32,6 +28,15 @@ call plug#begin()
   Plug 'puremourning/vimspector'
   Plug 'mbbill/undotree'
   Plug 'easymotion/vim-easymotion'
+  Plug 'tpope/vim-eunuch'
+  Plug 'tpope/vim-sleuth'
+  " Telescope
+  Plug 'nvim-lua/popup.nvim'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'fannheyward/telescope-coc.nvim'
+  Plug 'nvim-telescope/telescope-frecency.nvim'
+  Plug 'tami5/sql.nvim'
 call plug#end()
 
 let g:coc_global_extensions = [
@@ -60,33 +65,20 @@ let g:coc_global_extensions = [
 
 filetype plugin on
 
+
+"" Map leader to <Tab>
+" nnoremap <SPACE> <Nop>
+nnoremap <Tab> <Nop>
+let mapleader="\<Tab>"
+
 " coc config
 source $HOME/.config/nvim/coc.vim
 
-"" Map leader to <SPACE>
-nnoremap <SPACE> <Nop>
-let mapleader="\<Space>"
-
-" fzf config
-let $FZF_DEFAULT_OPTS="--color=dark --layout=reverse --margin=1,1 --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,pointer:12,marker:4,spinner:11,header:-1"
-" let $FZF_DEFAULT_OPTS=
-let $FZF_DEFAULT_COMMAND="rg --files --hidden --follow --smart-case --glob '!.git/*'"
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'highlight': 'Normal' } }
-
-autocmd! FileType fzf set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
-command! -bang -nargs=? -complete=dir Files
-        \ call fzf#vim#files(<q-args>, { 'options': ['--prompt', '> ', '--margin=1,1','--layout=reverse', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}', '--color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1', '--color=info:0,pointer:12,marker:4,spinner:11,header:-1']}, <bang>0)
-command! -bang -nargs=? -complete=dir FZFMru
-        \ call fzf_mru#actions#mru(<q-args>, { 'options': ['--no-height', '--prompt', '> ', '--margin=1,1','--layout=reverse', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}', '--color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1', '--color=info:0,pointer:12,marker:4,spinner:11,header:-1']}, <bang>0)
-noremap <leader>f :Files<CR>
-noremap <leader>r :Rg 
-" MRU
-noremap <silent> <C-space> :FZFFreshMru<CR>
-" MRU list related to PWD
-let g:fzf_mru_relative = 1
-" rg for grep
-set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " vim-smartclose
 nnoremap <silent><C-q> :q<CR>
@@ -96,7 +88,7 @@ let g:smartclose_set_default_mapping = 0
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
 nmap <C-_> <Plug>NERDCommenterToggle<CR>
-vmap <C-_>   <Plug>NERDCommenterToggle<CR>gv
+vmap <C-_> <Plug>NERDCommenterToggle<CR>gv
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -253,6 +245,9 @@ set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
+" font
+set guifont=CaskaydiaCove\ Nerd\ Font\ Mono:h22
+
 " Color scheme
 let g:gruvbox_contrast_dark="medium"
 let g:gruvbox_vert_split="bg2"
@@ -279,3 +274,13 @@ packloadall
 " All messages and errors will be ignored.
 silent! helptags ALL
 
+lua << EOF
+  require("telescope").load_extension("frecency")
+  require('telescope').load_extension('coc')
+
+  require('telescope').setup{
+    defaults = {
+      borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' }
+    }
+  }
+EOF

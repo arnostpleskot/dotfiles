@@ -1,7 +1,7 @@
 " === EasyMotion ===
 
 " <leader> is <space>
-let mapleader = " "
+" let mapleader = " "
 " normal easymotion commands e.g., <leader>w ...{label}
 nmap <Leader> <Plug>(easymotion-prefix)
 " easymotion 2-char search: s{char}{char} ...{label}
@@ -49,5 +49,5 @@ nnoremap vt vt|
 nnoremap yt yt|
 
 " Move cursor on start/end of line
-noremap <A-m> g^
-noremap <A-i> g$
+nnoremap <A-m> g^
+nnoremap <A-i> g$
