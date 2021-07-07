@@ -1,26 +1,3 @@
-#!/bin/sh
-
-~/.fehbg &
-
-picom -b &
-
-xinput set-button-map 'Kensington Expert Wireless TB Mouse' 3 8 1 4 5 6 7 2 &
-
-export $_JAVA_AWT_WM_NONREPARENTING=1 &
-
-xbindkeys &
-
-while true
-do
-	VOL=$(pamixer --get-volume-human)
-  UPDATES="$(yay -Qu | wc -l)"
-  LOCAL_DATE=$(date +%a" "%d.%m.%Y)
-	LOCAL_TIME=$(date +%R)
-	TEMP_CPU="$(sensors -j | jq '."k10temp-pci-00c3"."Tctl"."temp1_input"|floor')°C"
-  TEMP_GPU="$(sensors -j | jq '."amdgpu-pci-0b00"."junction"."temp2_input"|floor')°C"
-	RUNNING_MICS=$(pactl list short sources | grep -e "RUNNING" | wc -l) 
-	MIC_ICON=$([ $RUNNING_MICS -gt 0 ] && echo "   ")
-
-  xsetroot -name "$MIC_ICON   墳 $VOL    $TEMP_CPU   ﬙ $TEMP_GPU    $UPDATES    $LOCAL_DATE    $LOCAL_TIME   "
-	sleep 5s
-done &
+if [[ -n "`which luarocks 2>/dev/null`" ]]; then
+    eval `luarocks path --bin`
+fi
