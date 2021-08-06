@@ -3,14 +3,11 @@
 call shellescape("fnm use nvim")
 set nocompatible
 
-let g:polyglot_disabled = ['yaml']
-
 call plug#begin()
   Plug 'morhetz/gruvbox'
   Plug 'itchyny/lightline.vim'
-  Plug 'sheerun/vim-polyglot'
   Plug 'tpope/vim-fugitive'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocUpdate'}
   Plug 'francoiscabrol/ranger.vim'
   " Dependency for ranger.vim providing :Bclose function
   Plug 'rbgrouleff/bclose.vim'
@@ -24,8 +21,6 @@ call plug#begin()
   Plug 'machakann/vim-sandwich'
   Plug 'tpope/vim-abolish'
   Plug 'alvan/vim-closetag'
-  Plug 'vim-test/vim-test'
-  Plug 'puremourning/vimspector'
   Plug 'mbbill/undotree'
   Plug 'easymotion/vim-easymotion'
   Plug 'tpope/vim-eunuch'
@@ -37,6 +32,11 @@ call plug#begin()
   Plug 'fannheyward/telescope-coc.nvim'
   Plug 'nvim-telescope/telescope-frecency.nvim'
   Plug 'tami5/sql.nvim'
+  " Treesitter
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  " DAP
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'rcarriga/nvim-dap-ui'
 call plug#end()
 
 let g:coc_global_extensions = [
@@ -87,8 +87,10 @@ let g:smartclose_set_default_mapping = 0
 " vim-nerdcommenter
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
-nmap <C-_> <Plug>NERDCommenterToggle<CR>
-vmap <C-_> <Plug>NERDCommenterToggle<CR>gv
+" nmap <C-_> <Plug>NERDCommenterToggle<CR>
+" vmap <C-_> <Plug>NERDCommenterToggle<CR>gv
+nmap <leader>/ <Plug>NERDCommenterToggle<CR>
+vmap <leader>/ <Plug>NERDCommenterToggle<CR>gv
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -274,6 +276,9 @@ packloadall
 " All messages and errors will be ignored.
 silent! helptags ALL
 
+" Set proper filetype for gql command
+au BufNewFile,BufRead *.gql,*.graphql,*.graphqls setf graphql
+
 lua << EOF
   require("telescope").load_extension("frecency")
   require('telescope').load_extension('coc')
@@ -282,5 +287,24 @@ lua << EOF
     defaults = {
       borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' }
     }
+  }
+
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = {
+      "bash",
+      "css",
+      "fish",
+      "graphql",
+      "html",
+      "javascript",
+      "jsdoc", 
+      "json", 
+      "lua",
+      "tsx", 
+      "typescript",
+    }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    highlight = {
+      enable = true, -- false will disable the whole extension
+    },
   }
 EOF

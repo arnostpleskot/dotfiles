@@ -11,6 +11,19 @@
       "filetypes": [
         "reason"
       ]
+    },
+    "graphql": {
+      "command": "graphql-lsp",
+      "args": [
+        "server",
+        "-m",
+        "stream"
+      ],
+      "filetypes": [
+        "typescript",
+        "typescriptreact",
+        "graphql"
+      ]
     }
   },
   "suggest.removeDuplicateItems": true,
@@ -24,8 +37,8 @@
     "graphql"
   ],
   "eslint.autoFixOnSave": true,
-  // "prettier.requireConfig": true,
-  // "prettier.onlyUseLocalVersion": true,
+  "prettier.requireConfig": true,
+  "prettier.onlyUseLocalVersion": true,
   "git.addGBlameToVirtualText": true,
   "Lua.workspace.preloadFileSize": 500
 }
