@@ -1,29 +1,13 @@
-# fnm
-# set PATH /home/arnost/.fnm $PATH
-fnm env | source
+# asdf
+source ~/.asdf/asdf.fish
 
-function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
-    status --is-command-substitution; and return
-    if test -f .node-version -o -f .nvmrc
-        fnm use
-    end
+if status is-interactive
+and not set -q TMUX
+    exec tmux
 end
-
-fnm completions | source
-
-# PATH
-# ruby
-set PATH /home/arnost/.gem/ruby/2.7.0/bin $PATH
-
-# python
-# set PATH /home/arnost/.local/bin $PATH
-
-# Fix for java apps (https://wiki.archlinux.org/index.php/Dwm#Fixing_misbehaving_Java_applications)
-set -g -x _JAVA_AWT_WM_NONREPARENTING 1
 
 set -g -x EDITOR nvim
 set -x GPG_TTY (tty)
-set -x -g GTK_THEME Adwaita:dark
 
 # FZF
 
@@ -41,14 +25,10 @@ set -g FZF_DEFAULT_OPTS "$FZF_PREVIEW_OPTS"
 alias ls='exa -lah --icons'
 alias cat='bat'
 # alias ranger='lf'
-alias man='batman'
 alias f="fzf "$FZF_PREVIEW_OPTS""
-alias ssh="TERM=xterm /usr/bin/ssh"
 alias suspend="systemctl suspend"
 alias layout_us="setxkbmap -layout us && xmodmap ~/.Xmodmap"
 alias layout_cs="setxkbmap -layout cz && xmodmap ~/.Xmodmap"
-alias disk_usage="df -h -t btrfs"
-alias spotify="ncmpcpp"
 
 ## DOCKER
 # Stop/kill all running containers.
@@ -76,6 +56,7 @@ if not set -q fish_initialized
 
   ## git
   abbr -a g git
+  abbr -a ga git add
   abbr -a gs git status
   abbr -a gc git commit
   abbr -a gl git log
@@ -84,16 +65,8 @@ if not set -q fish_initialized
   abbr -a gm git merge
   abbr -a gps git push
   abbr -a gpl git pull
+  abbr -a gcl git clone
   abbr -a c config
-  abbr -a sls pactl list short sinks
-  abbr -a sset pactl set-default-sink
-end
-
-# Theme
-# Set theme only for interactive terminal: https://github.com/Jomik/fish-gruvbox/issues/3#issuecomment-712656458
-if status --is-interactive
-  theme_gruvbox dark medium
-  _fnm_autoload_hook
 end
 
 # Starship prompt

@@ -3,19 +3,19 @@
 call shellescape("fnm use nvim")
 set nocompatible
 
+let g:python3_host_prog = '~/.asdf/shims/python3'
+let g:python_host_prog  = '~/.asdf/shims/python2'
+
+
 call plug#begin()
   Plug 'morhetz/gruvbox'
   Plug 'itchyny/lightline.vim'
   Plug 'tpope/vim-fugitive'
   Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocUpdate'}
-  Plug 'francoiscabrol/ranger.vim'
-  " Dependency for ranger.vim providing :Bclose function
-  Plug 'rbgrouleff/bclose.vim'
-  Plug 'ryanoasis/vim-devicons'
   Plug 'mhinz/vim-startify'
-  Plug 'Yggdroot/indentLine'
-  Plug 'scrooloose/nerdcommenter'
+  Plug 'lukas-reineke/indent-blankline.nvim'
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+  Plug 'ryanoasis/vim-devicons'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'frazrepo/vim-rainbow'
   Plug 'machakann/vim-sandwich'
@@ -25,6 +25,8 @@ call plug#begin()
   Plug 'easymotion/vim-easymotion'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-sleuth'
+  Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-vinegar'
   " Telescope
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
@@ -32,6 +34,7 @@ call plug#begin()
   Plug 'fannheyward/telescope-coc.nvim'
   Plug 'nvim-telescope/telescope-frecency.nvim'
   Plug 'tami5/sql.nvim'
+  Plug 'kyazdani42/nvim-web-devicons'
   " Treesitter
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   " DAP
@@ -44,15 +47,12 @@ let g:coc_global_extensions = [
       \ "coc-elixir",
       \ "coc-emmet",
       \ "coc-eslint",
-      \ "coc-fsharp",
       \ "coc-git",
       \ "coc-highlight",
       \ "coc-json",
       \ "coc-lists",
       \ "coc-pairs",
       \ "coc-prettier",
-      \ "coc-reason",
-      \ "coc-smartf",
       \ "coc-sql",
       \ "coc-styled-components",
       \ "coc-syntax",
@@ -66,10 +66,9 @@ let g:coc_global_extensions = [
 filetype plugin on
 
 
-"" Map leader to <Tab>
-" nnoremap <SPACE> <Nop>
-nnoremap <Tab> <Nop>
-let mapleader="\<Tab>"
+"" Map leader to <SPACE>
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
 
 " coc config
 source $HOME/.config/nvim/coc.vim
@@ -83,14 +82,6 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 " vim-smartclose
 nnoremap <silent><C-q> :q<CR>
 let g:smartclose_set_default_mapping = 0
-
-" vim-nerdcommenter
-let g:NERDSpaceDelims = 1
-let g:NERDDefaultAlign = 'left'
-" nmap <C-_> <Plug>NERDCommenterToggle<CR>
-" vmap <C-_> <Plug>NERDCommenterToggle<CR>gv
-nmap <leader>/ <Plug>NERDCommenterToggle<CR>
-vmap <leader>/ <Plug>NERDCommenterToggle<CR>gv
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -164,12 +155,6 @@ noremap XX "+x<CR>
 vmap < <gv
 vmap > >gv
 
-" Ranger
-" disable default mappings
-let g:ranger_map_keys = 0
-silent! map <F2> :RangerWorkingDirectory<CR>
-silent! map <F3> :Ranger<CR>
-
 " Switching windows
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
@@ -180,8 +165,6 @@ noremap <C-h> <C-w>h
 noremap <leader>h <C-w>K
 " Switching horizontal layout to _v_ertical
 noremap <leader>v <C-w>H
-
-silent! noremap <F12> :syntax sync fromstart<CR>
 
 " Startify
 source $HOME/.config/nvim/startify.vim
@@ -247,9 +230,6 @@ set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-" font
-set guifont=CaskaydiaCove\ Nerd\ Font\ Mono:h22
-
 " Color scheme
 let g:gruvbox_contrast_dark="medium"
 let g:gruvbox_vert_split="bg2"
@@ -280,14 +260,11 @@ silent! helptags ALL
 au BufNewFile,BufRead *.gql,*.graphql,*.graphqls setf graphql
 
 lua << EOF
+  require'nvim-web-devicons'
   require("telescope").load_extension("frecency")
   require('telescope').load_extension('coc')
 
-  require('telescope').setup{
-    defaults = {
-      borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' }
-    }
-  }
+  require('telescope')
 
   require'nvim-treesitter.configs'.setup {
     ensure_installed = {
@@ -306,5 +283,15 @@ lua << EOF
     highlight = {
       enable = true, -- false will disable the whole extension
     },
+  }
+
+  vim.opt.list = true
+  vim.opt.listchars:append("space:⋅")
+  vim.opt.listchars:append("eol:↴")
+
+  require("indent_blankline").setup {
+    space_char_blankline = " ",
+    show_current_context = true,
+    show_current_context_start = true,
   }
 EOF
