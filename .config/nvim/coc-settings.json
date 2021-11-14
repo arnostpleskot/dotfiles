@@ -33,12 +33,9 @@
     "javascriptreact",
     "typescript",
     "typescriptreact",
-    "json",
-    "graphql"
+    "json"
   ],
   "eslint.autoFixOnSave": true,
   "prettier.requireConfig": true,
-  "prettier.onlyUseLocalVersion": true,
-  "git.addGBlameToVirtualText": true,
-  "Lua.workspace.preloadFileSize": 500
+  "git.addGBlameToVirtualText": true
 }
