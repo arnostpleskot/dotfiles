@@ -62,6 +62,7 @@ if not set -q fish_initialized
   abbr -a gl git log
   abbr -a gco git checkout
   abbr -a gd git diff
+  abbr -a gr git rebase
   abbr -a gm git merge
   abbr -a gps git push
   abbr -a gpl git pull
