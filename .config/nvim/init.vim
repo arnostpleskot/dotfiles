@@ -1,6 +1,3 @@
-" Change node version on startup to support all related node dependencies (eg.
-" typescript)
-call shellescape("fnm use nvim")
 set nocompatible
 
 let g:python3_host_prog = '~/.asdf/shims/python3'
@@ -236,6 +233,13 @@ let g:gruvbox_italicize_comments=1
 let g:gruvbox_italicize_strings=1
 let g:gruvbox_invert_selection=0
 colorscheme gruvbox
+
+" Custom git gutter colors
+highlight clear SignColumn
+highlight GitGutterAdd guifg=#427b58
+highlight GitGutterChange guifg=#d79921
+highlight GitGutterDelete guifg=#9d0006
+" set signcolumn=number
 
 " Mouse
 set mousemodel=popup

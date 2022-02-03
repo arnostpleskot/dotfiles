@@ -37,5 +37,15 @@
   ],
   "eslint.autoFixOnSave": true,
   "prettier.requireConfig": true,
-  "git.addGBlameToVirtualText": true
+  "git.addGBlameToVirtualText": true,
+  "git.addedSign.text": "│",
+  "git.changedSign.text": "│",
+  "git.removedSign.text": "│",
+  "git.topRemovedSign.text": "│",
+  "git.changeRemovedSign.text": "│",
+  "git.addedSign.hlGroup": "GitGutterAdd",
+  "git.changedSign.hlGroup": "GitGutterChange",
+  "git.removedSign.hlGroup": "GitGutterDelete", 
+  "git.topRemovedSign.hlGroup": "GitGutterDelete", 
+  "git.changeRemovedSign.hlGroup": "GitGutterChange"
 }
