@@ -9,6 +9,15 @@ end
 set -g -x EDITOR nvim
 set -x GPG_TTY (tty)
 
+# PATH
+set -g ANDROID_HOME $HOME/Android/Sdk
+set -x ANDROID_SDK_ROOT $ANDROID_HOME
+set -x PATH $PATH /home/arnost/Projects/phabricator/arcanist/bin
+set -x PATH $PATH $ANDROID_HOME/emulator
+set -x PATH $PATH $ANDROID_HOME/tools
+set -x PATH $PATH $ANDROID_HOME/tools/bin
+set -x PATH $PATH $ANDROID_HOME/platform-tools
+
 # FZF
 
 # Use ripgrep in FZF
@@ -68,6 +77,13 @@ if not set -q fish_initialized
   abbr -a gpl git pull
   abbr -a gcl git clone
   abbr -a c config
+
+  ## arcanist
+  abbr -a arcd 'arc diff'
+  abbr -a arcp 'arc patch'
+  abbr -a arcdb 'arc diff HEAD^ --browse'
+  abbr -a arcdr 'arc diff HEAD^ -m rebase'
+  abbr -a arcdo 'arc diff HEAD^ --only --browse'
 end
 
 # Starship prompt
