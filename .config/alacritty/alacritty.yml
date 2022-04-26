@@ -33,6 +33,8 @@ window:
 
   decorations: none
 
+  opacity: 1
+
 font:
   normal:
     family: JetBrainsMono Nerd Font
@@ -51,8 +53,6 @@ font:
     style: Bold Italic
 
   size: 14
-
-background_opacity: 1
 
 selection:
   save_to_clipboard: true
