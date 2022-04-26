@@ -34,9 +34,12 @@ call plug#begin()
   Plug 'kyazdani42/nvim-web-devicons'
   " Treesitter
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  " DAP
+  " DAP - debug adapter protocol
   Plug 'mfussenegger/nvim-dap'
   Plug 'rcarriga/nvim-dap-ui'
+  " Dadbod - db integration
+  Plug 'tpope/vim-dadbod'
+  Plug 'kristijanhusak/vim-dadbod-ui'
 call plug#end()
 
 let g:coc_global_extensions = [
@@ -58,6 +61,7 @@ let g:coc_global_extensions = [
       \ "coc-word",
       \ "coc-yaml",
       \ "coc-yank",
+      \ "coc-db",
       \ ]
 
 filetype plugin on
@@ -75,6 +79,16 @@ nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" Dadbod command
+xnoremap <expr> <Plug>(DBExe)     db#op_exec()
+nnoremap <expr> <Plug>(DBExe)     db#op_exec()
+nnoremap <expr> <Plug>(DBExeLine) db#op_exec() . '_'
+
+xmap <leader>db  <Plug>(DBExe)
+nmap <leader>db  <Plug>(DBExe)
+omap <leader>db  <Plug>(DBExe)
+nmap <leader>dbb <Plug>(DBExeLine)
 
 " vim-smartclose
 nnoremap <silent><C-q> :q<CR>
@@ -283,6 +297,7 @@ lua << EOF
       "lua",
       "tsx", 
       "typescript",
+      "prisma",
     }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
     highlight = {
       enable = true, -- false will disable the whole extension
