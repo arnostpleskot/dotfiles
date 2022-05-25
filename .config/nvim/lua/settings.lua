@@ -1,3 +1,5 @@
+local theme = require "theme"
+
 vim.g.mapleader = " "
 vim.g.python3_host_prog = "~/.asdf/shims/python3"
 vim.g.python_host_prog = "~/.asdf/shims/python2"
@@ -29,7 +31,6 @@ local options = {
   splitright = true,
   number = true,
   relativenumber = true,
-  clipboard = "unnamed,unnamedplus",
   cursorline = true,
   mouse = "a",
   cmdheight = 1,
@@ -41,6 +42,7 @@ local options = {
   background = "dark",
   wrap = false,
   showtabline = 0,
+  list = true,
 }
 
 local globalVariables = {
@@ -51,11 +53,16 @@ local globalVariables = {
 }
 
 vim.opt.shortmess:append "c"
+vim.opt.listchars:append "space:⋅"
+vim.opt.listchars:append "eol:↴"
+vim.opt.clipboard:append "unnamedplus"
 
 for key, value in pairs(options) do
   vim.opt[key] = value
 end
 
 for key, value in pairs(globalVariables) do
-  vim.api.nvim_set_var(key , value)
+  vim.api.nvim_set_var(key, value)
 end
+
+theme.init()

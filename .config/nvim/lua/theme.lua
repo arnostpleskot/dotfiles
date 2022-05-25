@@ -1,52 +1,93 @@
-local theme = {}
+local _M = {}
 
-
-theme.colors = {
-  dark0_hard = "#1d2021",
-  dark0 = "#282828",
-  dark0_soft = "#32302f",
-  dark1 = "#3c3836",
-  dark2 = "#504945",
-  dark3 = "#665c54",
-  dark4 = "#7c6f64",
-  light0_hard = "#f9f5d7",
-  light0 = "#fbf1c7",
-  light0_soft = "#f2e5bc",
-  light1 = "#ebdbb2",
-  light2 = "#d5c4a1",
-  light3 = "#bdae93",
-  light4 = "#a89984",
-  bright_red = "#fb4934",
-  bright_green = "#b8bb26",
-  bright_yellow = "#fabd2f",
-  bright_blue = "#83a598",
-  bright_purple = "#d3869b",
-  bright_aqua = "#8ec07c",
-  bright_orange = "#fe8019",
-  neutral_red = "#cc241d",
-  neutral_green = "#98971a",
-  neutral_yellow = "#d79921",
-  neutral_blue = "#458588",
-  neutral_purple = "#b16286",
-  neutral_aqua = "#689d6a",
-  neutral_orange = "#d65d0e",
-  faded_red = "#9d0006",
-  faded_green = "#79740e",
-  faded_yellow = "#b57614",
-  faded_blue = "#076678",
-  faded_purple = "#8f3f71",
-  faded_aqua = "#427b58",
-  faded_orange = "#af3a03",
-  gray = "#928374",
+_M.colors = {
+  bg = "#2e3440",
+  fg = "#ECEFF4",
+  red = "#bf616a",
+  orange = "#d08770",
+  yellow = "#ebcb8b",
+  blue = "#5e81ac",
+  green = "#a3be8c",
+  cyan = "#88c0d0",
+  magenta = "#b48ead",
+  pink = "#FFA19F",
+  grey1 = "#f8fafc",
+  grey2 = "#f0f1f4",
+  grey3 = "#eaecf0",
+  grey4 = "#d9dce3",
+  grey5 = "#c4c9d4",
+  grey6 = "#b5bcc9",
+  grey7 = "#929cb0",
+  grey8 = "#8e99ae",
+  grey9 = "#74819a",
+  grey10 = "#616d85",
+  grey11 = "#464f62",
+  grey12 = "#3a4150",
+  grey13 = "#333a47",
+  grey14 = "#242932",
+  grey15 = "#1e222a",
+  grey16 = "#1c1f26",
+  grey17 = "#0f1115",
+  grey18 = "#0d0e11",
+  grey19 = "#020203",
 }
 
-vim.api.nvim_set_var("gruvbox_italic", 1)
-vim.api.nvim_set_var("gruvbox_italicize_comments", 1)
-vim.api.nvim_set_var("gruvbox_italicize_strings", 1)
-vim.api.nvim_set_var("gruvbox_invert_selection", 0)
+_M.init = function()
+  local isExistNord, onenord = pcall(require, "onenord")
+  if isExistNord then
+    onenord.setup {
+      borders = true,
+      fade_nc = false,
+      styles = {
+        comments = "italic",
+        strings = "NONE",
+        keywords = "NONE",
+        functions = "italic",
+        variables = "bold",
+        diagnostics = "underline",
+      },
+      disable = {
+        background = false,
+        cursorline = false,
+        eob_lines = true,
+      },
+      custom_highlights = {
+        VertSplit = { fg = _M.colors.grey14 },
+        BufferLineIndicatorSelected = { fg = _M.colors.cyan, bg = _M.colors.bg },
+        BufferLineFill = { fg = _M.colors.fg, bg = _M.colors.grey14 },
+        NvimTreeNormal = { fg = _M.colors.grey5, bg = _M.colors.grey14 },
+        WhichKeyFloat = { bg = _M.colors.grey14 },
+        GitSignsAdd = { fg = _M.colors.green },
+        GitSignsChange = { fg = _M.colors.orange },
+        GitSignsDelete = { fg = _M.colors.red },
+        NvimTreeFolderIcon = { fg = _M.colors.grey9 },
+        NvimTreeIndentMarker = { fg = _M.colors.grey12 },
 
-vim.cmd([[colorscheme gruvbox]])
+        NormalFloat = { bg = _M.colors.grey14 },
+        FloatBorder = { bg = _M.colors.grey14, fg = _M.colors.grey14 },
 
-vim.api.nvim_set_hl(0, 'SignColumn', {})
+        TelescopePromptPrefix = { bg = _M.colors.grey14 },
+        TelescopePromptNormal = { bg = _M.colors.grey14 },
+        TelescopeResultsNormal = { bg = _M.colors.grey15 },
+        TelescopePreviewNormal = { bg = _M.colors.grey16 },
 
-return theme
+        TelescopePromptBorder = { bg = _M.colors.grey14, fg = _M.colors.grey14 },
+        TelescopeResultsBorder = { bg = _M.colors.grey15, fg = _M.colors.grey15 },
+        TelescopePreviewBorder = { bg = _M.colors.grey16, fg = _M.colors.grey16 },
+
+        TelescopePromptTitle = { fg = _M.colors.grey14 },
+        TelescopeResultsTitle = { fg = _M.colors.grey15 },
+        TelescopePreviewTitle = { fg = _M.colors.grey16 },
+
+        PmenuSel = { bg = _M.colors.grey12 },
+        Pmenu = { bg = _M.colors.grey14 },
+        PMenuThumb = { bg = _M.colors.grey16 },
+
+        LspFloatWinNormal = { fg = _M.colors.fg, bg = _M.colors.grey14 },
+        LspFloatWinBorder = { fg = _M.colors.grey14 },
+      },
+    }
+  end
+end
+
+return _M

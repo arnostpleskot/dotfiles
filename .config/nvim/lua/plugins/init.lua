@@ -35,7 +35,7 @@ return packer.startup(function(use)
   use { "wbthomason/packer.nvim" }
 
   -- UI
-  use { "ellisonleao/gruvbox.nvim" }
+  use { "rmehri01/onenord.nvim" }
   use { "goolord/alpha-nvim", config = require "plugins.configs.alpha" }
   use { "kyazdani42/nvim-web-devicons", config = require "plugins.configs.icons" }
   use {
@@ -49,13 +49,13 @@ return packer.startup(function(use)
 
   -- Syntax
   use {
-      "nvim-treesitter/nvim-treesitter",
-      requires = {
-          "windwp/nvim-ts-autotag",
-          "p00f/nvim-ts-rainbow",
-      },
-      run = ":TSUpdate",
-      config = require "plugins.configs.treesitter",
+    "nvim-treesitter/nvim-treesitter",
+    requires = {
+      "windwp/nvim-ts-autotag",
+      "p00f/nvim-ts-rainbow",
+    },
+    run = ":TSUpdate",
+    config = require "plugins.configs.treesitter",
   }
 
   -- Utilities
@@ -65,42 +65,43 @@ return packer.startup(function(use)
     "nvim-telescope/telescope.nvim",
     requires = {
       "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope-frecency.nvim",
     },
     config = require "plugins.configs.telescope",
   }
-  use { "nvim-telescope/telescope-fzf-native.nvim", run = "make" }
-  use { "nvim-telescope/telescope-frecency.nvim", requires = {"tami5/sqlite.lua"} }
   use { "tpope/vim-surround" }
   use { "norcalli/nvim-colorizer.lua", config = require "plugins.configs.colorizer" }
   use { "RRethy/vim-illuminate" }
   use { "numToStr/Comment.nvim", config = require "plugins.configs.comment" }
+  use { "tpope/vim-rsi" }
+
   -- LSP
   use {
-      "williamboman/nvim-lsp-installer",
-      requires = {
-          "neovim/nvim-lspconfig",
-          "jose-elias-alvarez/typescript.nvim",
-      },
+    "williamboman/nvim-lsp-installer",
+    requires = {
+      "neovim/nvim-lspconfig",
+      "jose-elias-alvarez/typescript.nvim",
+    },
   }
   use {
-      "jose-elias-alvarez/null-ls.nvim",
-      requires = { "nvim-lua/plenary.nvim" },
+    "jose-elias-alvarez/null-ls.nvim",
+    requires = { "nvim-lua/plenary.nvim" },
   }
 
   -- Completion
   use {
-      "hrsh7th/nvim-cmp",
-      requires = {
-          "hrsh7th/cmp-nvim-lsp",
-          "hrsh7th/cmp-nvim-lua",
-          "hrsh7th/cmp-buffer",
-          "hrsh7th/cmp-path",
-          "hrsh7th/cmp-cmdline",
-          "hrsh7th/cmp-nvim-lsp-document-symbol",
-          "hrsh7th/cmp-nvim-lsp-signature-help",
-      },
-      config = require "plugins.configs.cmp",
+    "hrsh7th/nvim-cmp",
+    requires = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-nvim-lsp-document-symbol",
+      "hrsh7th/cmp-vsnip",
+      "hrsh7th/vim-vsnip",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
+    },
+    config = require "plugins.configs.cmp",
   }
 
   -- -- Snippets
@@ -112,10 +113,10 @@ return packer.startup(function(use)
 
   -- Git
   use {
-      "lewis6991/gitsigns.nvim",
-      requires = {
-          "nvim-lua/plenary.nvim",
-      },
-      config = require "plugins.configs.gitsigns",
+    "lewis6991/gitsigns.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+    },
+    config = require "plugins.configs.gitsigns",
   }
 end)
