@@ -44,7 +44,6 @@ return packer.startup(function(use)
     requires = { "kyazdani42/nvim-web-devicons", opt = true },
   }
   use { "folke/which-key.nvim" }
-  use { "karb94/neoscroll.nvim", config = require "plugins.configs.neoscroll" }
   use { "jiaoshijie/undotree" }
 
   -- Syntax
@@ -65,6 +64,7 @@ return packer.startup(function(use)
     "nvim-telescope/telescope.nvim",
     requires = {
       "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-ui-select.nvim"
     },
     config = require "plugins.configs.telescope",
   }
@@ -73,6 +73,7 @@ return packer.startup(function(use)
   use { "RRethy/vim-illuminate" }
   use { "numToStr/Comment.nvim", config = require "plugins.configs.comment" }
   use { "tpope/vim-rsi" }
+  use { "tpope/vim-vinegar" }
 
   -- LSP
   use {
@@ -118,5 +119,15 @@ return packer.startup(function(use)
       "nvim-lua/plenary.nvim",
     },
     config = require "plugins.configs.gitsigns",
+  }
+
+  -- Rust
+  use {
+    "simrat39/rust-tools.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    config = require "plugins.configs.rust-tools"
   }
 end)
