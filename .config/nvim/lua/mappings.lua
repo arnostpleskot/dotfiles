@@ -1,141 +1,141 @@
 local ok, wk = pcall(require, "which-key")
 
 if not ok then
-  return
+	return
 end
 
 local options = {
-  prefix = "",
-  silent = true,
-  noremap = true,
-  nowait = true,
+	prefix = "",
+	silent = true,
+	noremap = true,
+	nowait = true,
 }
 
 local optionsN = {
-  mode = "n",
-  prefix = "",
-  silent = true,
-  noremap = true,
-  nowait = true,
+	mode = "n",
+	prefix = "",
+	silent = true,
+	noremap = true,
+	nowait = true,
 }
 
 local optionsV = {
-  mode = "v",
-  prefix = "",
-  silent = true,
-  noremap = true,
-  nowait = true,
+	mode = "v",
+	prefix = "",
+	silent = true,
+	noremap = true,
+	nowait = true,
 }
 
 wk.register({
-  -- [[Illuminate]]
-  ["<Tab>"] = { "<cmd>lua require'illuminate'.next_reference{wrap=true}<cr>", "[ILLUMINATE] Next reference" },
-  ["<S-Tab>"] = {
-    "<cmd>lua require'illuminate'.next_reference{reverse=true,wrap=true}<cr>",
-    "[ILLUMINATE] Next reference",
-  },
+	-- [[Illuminate]]
+	["<Tab>"] = { "<cmd>lua require'illuminate'.next_reference{wrap=true}<cr>", "[ILLUMINATE] Next reference" },
+	["<S-Tab>"] = {
+		"<cmd>lua require'illuminate'.next_reference{reverse=true,wrap=true}<cr>",
+		"[ILLUMINATE] Next reference",
+	},
 
-  -- [[ Telescope ]]
-  ["<leader>f"] = {
-    name = "[TELESCOPE]",
-    f = { "<cmd>Telescope find_files hidden=true<cr>", "[TELESCOPE] Find File" },
-    g = { "<cmd>Telescope live_grep<cr>", "[TELESCOPE] Find File by grep" },
-    b = { "<cmd>Telescope buffers<cr>", "[TELESCOPE] Find buffers" },
-    h = { "<cmd>Telescope help_tags<cr>", "[TELESCOPE] Help tags" },
-    m = { "<cmd>Telescope marks<cr>", "[TELESCOPE] Marks" },
-  },
+	-- [[ Telescope ]]
+	["<leader>f"] = {
+		name = "[TELESCOPE]",
+		f = { "<cmd>Telescope find_files hidden=true<cr>", "[TELESCOPE] Find File" },
+		g = { "<cmd>Telescope live_grep<cr>", "[TELESCOPE] Find File by grep" },
+		b = { "<cmd>Telescope buffers<cr>", "[TELESCOPE] Find buffers" },
+		h = { "<cmd>Telescope help_tags<cr>", "[TELESCOPE] Help tags" },
+		m = { "<cmd>Telescope marks<cr>", "[TELESCOPE] Marks" },
+	},
 
-  ["<C-Space>"] = { "<cmd>Telescope oldfiles only_cwd=true<cr>", "[TELESCOPE] Recent" },
+	["<C-Space>"] = { "<cmd>Telescope oldfiles only_cwd=true<cr>", "[TELESCOPE] Recent" },
 
-  -- [[ Gitsigns ]]
-  ["<leader>g"] = {
-    name = "[GITSIGNS]",
-    s = { "<cmd>Gitsigns toggle_signs<cr>", "[GITSIGNS] Toggle signs" },
-    h = { "<cmd>Gitsigns preview_hunk<cr>", "[GITSIGNS] Preview hunk" },
-    d = { "<cmd>Gitsigns diffthis<cr>", "[GITSIGNS] Show diff" },
-  },
+	-- [[ Gitsigns ]]
+	["<leader>g"] = {
+		name = "[GITSIGNS]",
+		s = { "<cmd>Gitsigns toggle_signs<cr>", "[GITSIGNS] Toggle signs" },
+		h = { "<cmd>Gitsigns preview_hunk<cr>", "[GITSIGNS] Preview hunk" },
+		d = { "<cmd>Gitsigns diffthis<cr>", "[GITSIGNS] Show diff" },
+	},
 
-  -- [[ UI ]]
-  ["<leader>u"] = {
-    name = "[UI]",
-    u = { "<cmd>UndotreeToggle<cr>", "[UI] Undotree" },
-    a = { "<cmd>Alpha<cr>", "[UI] Alpha" },
-  },
+	-- [[ UI ]]
+	["<leader>u"] = {
+		name = "[UI]",
+		u = { "<cmd>UndotreeToggle<cr>", "[UI] Undotree" },
+		a = { "<cmd>Alpha<cr>", "[UI] Alpha" },
+	},
 
-  -- [[ Window ]]
-  ["<leader>w"] = {
-    name = "[Window]",
-    ["\\"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
-    ["-"] = { "<cmd>split<CR>", "[Window] split horizontal" },
-    h = { "<C-w>K", "[Window] vertical to horizontal" },
-    v = { "<C-w>H", "[Window] horizontal to vertical" },
+	-- [[ Window ]]
+	["<leader>w"] = {
+		name = "[Window]",
+		["\\"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
+		["-"] = { "<cmd>split<CR>", "[Window] split horizontal" },
+		h = { "<C-w>K", "[Window] vertical to horizontal" },
+		v = { "<C-w>H", "[Window] horizontal to vertical" },
 
-    -- switching panes
-    m = { "<C-W>h", "switch pane to left" },
-    n = { "<C-W>j", "switch pane to down" },
-    e = { "<C-W>k", "switch pane to up" },
-    i = { "<C-W>l", "switch pane to right" },
-  },
+		-- switching panes
+		m = { "<C-W>h", "switch pane to left" },
+		n = { "<C-W>j", "switch pane to down" },
+		e = { "<C-W>k", "switch pane to up" },
+		i = { "<C-W>l", "switch pane to right" },
+	},
 
-  -- [[ LSP ]]
-  K = "[LSP] hover",
-  ["<leader>d"] = "[DIAGNOSTIC] open float",
-  ["<M-CR>"] = "[LSP] code action",
-  ["<leader>l"] = {
-    name = "[LSP]",
-    p = "[DIAGNOSTIC] prev",
-    n = "[DIAGNOSTIC] next",
-    q = "[DIAGNOSTIC] open list",
+	-- [[ LSP ]]
+	K = "[LSP] hover",
+	["<leader>d"] = "[DIAGNOSTIC] open float",
+	["<M-CR>"] = "[LSP] code action",
+	["<leader>l"] = {
+		name = "[LSP]",
+		p = "[DIAGNOSTIC] prev",
+		n = "[DIAGNOSTIC] next",
+		q = "[DIAGNOSTIC] open list",
 
-    D = "[LSP] definition",
-    r = "[LSP] rename",
-    f = "[LSP] format",
+		D = "[LSP] definition",
+		r = "[LSP] rename",
+		f = "[LSP] format",
 
-    w = {
-      name = "[WORKSPACE]",
-      a = "[WORKSPACE] add workspace folder",
-      r = "[WORKSPACE] remove workspace folder",
-      l = "[WORKSPACE] list workspace folders",
-    }
-  },
-  g = {
-    D = "[LSP] declaration",
-    d = "[LSP] definition",
-    r = "[LSP] reference",
-    i = "[LSP] implementation",
-  },
+		w = {
+			name = "[WORKSPACE]",
+			a = "[WORKSPACE] add workspace folder",
+			r = "[WORKSPACE] remove workspace folder",
+			l = "[WORKSPACE] list workspace folders",
+		},
+	},
+	g = {
+		D = "[LSP] declaration",
+		d = "[LSP] definition",
+		r = "[LSP] reference",
+		i = "[LSP] implementation",
+	},
 
-  -- global shortcuts
-  ["<C-q>"] = { "<cmd>q<CR>", "close window" },
-  ["<C-s>"] = { "<cmd>wa<CR>", "save all app" },
+	-- global shortcuts
+	["<C-q>"] = { "<cmd>q<CR>", "close window" },
+	["<C-s>"] = { "<cmd>wa<CR>", "save all app" },
 }, optionsN)
 
 wk.register({
-  ["<"] = { "<gv", "Shift to left" },
-  [">"] = { ">gv", "Shift to right" },
+	["<"] = { "<gv", "Shift to left" },
+	[">"] = { ">gv", "Shift to right" },
 }, optionsV)
 
 wk.register({
-  -- Colemak
-  -- movement
-  m = { "h", "move Left" },
-  n = { "gj", "move Down" },
-  e = { "gk", "move Up" },
-  i = { "l", "move Right" },
-  t = { "i", "(t)ype - replaces (i)nsert" },
-  T = { "I", "(T)ype - replaces (I)nsert" },
-  E = { "e", "end of word - replaces (e)nd" },
-  h = { "n", "next match - replaces (n)ext" },
-  k = { "N", "previous match - replaces (N) prev" },
-  M = { "m|", "mark - replaces (m)ark" },
+	-- Colemak
+	-- movement
+	m = { "h", "move Left" },
+	n = { "gj", "move Down" },
+	e = { "gk", "move Up" },
+	i = { "l", "move Right" },
+	t = { "i", "(t)ype - replaces (i)nsert" },
+	T = { "I", "(T)ype - replaces (I)nsert" },
+	E = { "e", "end of word - replaces (e)nd" },
+	h = { "n", "next match - replaces (n)ext" },
+	k = { "N", "previous match - replaces (N) prev" },
+	M = { "m|", "mark - replaces (m)ark" },
 
-  -- page up/down
-  ["<A-e>"] = { "<C-b>H", "page up" },
-  ["<A-n>"] = { "<C-f>", "page down" },
+	-- page up/down
+	["<A-e>"] = { "<C-b>H", "page up" },
+	["<A-n>"] = { "<C-f>", "page down" },
 
-  -- moving on line
-  ["<A-m>"] = { "g^", "move cursor to start of line" },
-  ["<A-i>"] = { "g$", "move cursor to end of line" },
+	-- moving on line
+	["<A-m>"] = { "g^", "move cursor to start of line" },
+	["<A-i>"] = { "g$", "move cursor to end of line" },
 }, options)
 
-wk.setup {}
+wk.setup({})
