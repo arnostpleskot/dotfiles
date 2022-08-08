@@ -6,6 +6,7 @@ end
 
 local utils = require("utils")
 local null_ls = require("lsp.servers.null-ls")
+local navic = require("nvim-navic")
 
 local servers = {
 	"bashls",
@@ -69,6 +70,10 @@ local on_attach = function(client, bufnr)
 				})
 			end,
 		})
+	end
+
+	if client.server_capabilities.documentSymbolProvider then
+		navic.attach(client, bufnr)
 	end
 
 	require("illuminate").on_attach(client)

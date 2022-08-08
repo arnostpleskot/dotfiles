@@ -56,6 +56,20 @@ return packer.startup(function(use)
 		run = ":TSUpdate",
 		config = require("plugins.configs.treesitter"),
 	})
+	use({
+		"lewis6991/spellsitter.nvim",
+		requires = {
+			"nvim-treesitter/nvim-treesitter",
+			config = require("plugins.configs.spellsitter"),
+		},
+	})
+	use({
+		"nvim-treesitter/nvim-treesitter-context",
+		requires = {
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = require("plugins.configs.context"),
+	})
 
 	-- Utilities
 	use({ "lukas-reineke/indent-blankline.nvim", config = require("plugins.configs.indent") })
@@ -68,12 +82,16 @@ return packer.startup(function(use)
 		},
 		config = require("plugins.configs.telescope"),
 	})
-	use({ "tpope/vim-surround" })
 	use({ "norcalli/nvim-colorizer.lua", config = require("plugins.configs.colorizer") })
 	use({ "RRethy/vim-illuminate" })
 	use({ "numToStr/Comment.nvim", config = require("plugins.configs.comment") })
 	use({ "tpope/vim-rsi" })
 	use({ "tpope/vim-vinegar" })
+	use({ "beauwilliams/focus.nvim", config = require("plugins.configs.focus") })
+	use({
+		"kylechui/nvim-surround",
+		config = require("plugins.configs.surround"),
+	})
 
 	-- LSP
 	use({
@@ -86,6 +104,11 @@ return packer.startup(function(use)
 	use({
 		"jose-elias-alvarez/null-ls.nvim",
 		requires = { "nvim-lua/plenary.nvim" },
+	})
+	use({
+		"SmiteshP/nvim-navic",
+		requires = "neovim/nvim-lspconfig",
+		config = require("plugins.configs.navic"),
 	})
 
 	-- Completion
@@ -131,11 +154,10 @@ return packer.startup(function(use)
 		config = require("plugins.configs.rust-tools"),
 	})
 
-	-- Neorg
 	use({
 		"nvim-neorg/neorg",
 		config = require("plugins.configs.neorg"),
-		requires = {
+		require = {
 			"nvim-lua/plenary.nvim",
 		},
 	})

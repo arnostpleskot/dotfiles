@@ -43,6 +43,8 @@ local options = {
 	wrap = false,
 	showtabline = 0,
 	list = true,
+	spelllang = "en",
+	spell = true,
 }
 
 local globalVariables = {

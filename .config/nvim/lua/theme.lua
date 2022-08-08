@@ -66,16 +66,16 @@ _M.init = function()
 				NormalFloat = { bg = _M.colors.grey14 },
 				FloatBorder = { bg = _M.colors.grey14, fg = _M.colors.grey14 },
 
-				TelescopePromptPrefix = { bg = _M.colors.grey14 },
-				TelescopePromptNormal = { bg = _M.colors.grey14 },
+				TelescopePromptPrefix = { bg = _M.colors.grey13 },
+				TelescopePromptNormal = { bg = _M.colors.grey13 },
 				TelescopeResultsNormal = { bg = _M.colors.grey15 },
 				TelescopePreviewNormal = { bg = _M.colors.grey16 },
 
-				TelescopePromptBorder = { bg = _M.colors.grey14, fg = _M.colors.grey14 },
+				TelescopePromptBorder = { bg = _M.colors.grey13, fg = _M.colors.grey13 },
 				TelescopeResultsBorder = { bg = _M.colors.grey15, fg = _M.colors.grey15 },
 				TelescopePreviewBorder = { bg = _M.colors.grey16, fg = _M.colors.grey16 },
 
-				TelescopePromptTitle = { fg = _M.colors.grey14 },
+				TelescopePromptTitle = { fg = _M.colors.grey13 },
 				TelescopeResultsTitle = { fg = _M.colors.grey15 },
 				TelescopePreviewTitle = { fg = _M.colors.grey16 },
 

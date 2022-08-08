@@ -43,6 +43,7 @@ wk.register({
 		b = { "<cmd>Telescope buffers<cr>", "[TELESCOPE] Find buffers" },
 		h = { "<cmd>Telescope help_tags<cr>", "[TELESCOPE] Help tags" },
 		m = { "<cmd>Telescope marks<cr>", "[TELESCOPE] Marks" },
+		c = { "<cmd>Telescope git_status<cr>", "[TELESCOPE] Git changes" },
 	},
 
 	["<C-Space>"] = { "<cmd>Telescope oldfiles only_cwd=true<cr>", "[TELESCOPE] Recent" },
@@ -51,8 +52,10 @@ wk.register({
 	["<leader>g"] = {
 		name = "[GITSIGNS]",
 		s = { "<cmd>Gitsigns toggle_signs<cr>", "[GITSIGNS] Toggle signs" },
-		h = { "<cmd>Gitsigns preview_hunk<cr>", "[GITSIGNS] Preview hunk" },
+		p = { "<cmd>Gitsigns preview_hunk<cr>", "[GITSIGNS] Preview hunk" },
 		d = { "<cmd>Gitsigns diffthis<cr>", "[GITSIGNS] Show diff" },
+		k = { "<cmd>Gitsigns prev_hunk<cr>", "[GITSIGNS] Prev hunk" },
+		h = { "<cmd>Gitsigns next_hunk<cr>", "[GITSIGNS] Next hunk" },
 	},
 
 	-- [[ UI ]]
@@ -66,6 +69,7 @@ wk.register({
 	["<leader>w"] = {
 		name = "[Window]",
 		["\\"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
+		["|"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
 		["-"] = { "<cmd>split<CR>", "[Window] split horizontal" },
 		h = { "<C-w>K", "[Window] vertical to horizontal" },
 		v = { "<C-w>H", "[Window] horizontal to vertical" },

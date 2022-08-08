@@ -15,6 +15,7 @@ if ok then
 		button("SPC f o", "  Recents", "<cmd>Telescope oldfiles only_cwd=true<cr>"),
 		button("SPC f g", "  Find Word", "<cmd>Telescope live_grep<cr>"),
 		button("SPC f m", "  Bookmarks", "<cmd>Telescope marks<cr>"),
+		button("SPC f c", "  Git Changes", "<cmd>Telescope git_status<cr>"),
 	}
 
 	alpha.setup(dashboard.opts)
