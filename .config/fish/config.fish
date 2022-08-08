@@ -8,9 +8,10 @@ end
 
 set -g -x EDITOR nvim
 set -x GPG_TTY (tty)
+set -g ANDROID_HOME $HOME/Android/Sdk
 
 # PATH
-set -g ANDROID_HOME $HOME/Android/Sdk
+set -x PATH $PATH $HOME/bin
 set -x ANDROID_SDK_ROOT $ANDROID_HOME
 set -x PATH $PATH /home/arnost/Projects/phabricator/arcanist/bin
 set -x PATH $PATH $ANDROID_HOME/emulator
@@ -49,7 +50,8 @@ alias dockercleanimages='printf "\n===> Deleting untagged images\n\n" && docker 
 # Delete dangling volumes
 alias dockercleanvolumes='printf "\n===> Deleting dangling volumes\n\n" && docker volume rm (docker volume ls -qf dangling=true)'
 # Delete all untagged images and dangling volumes.
-alias dockerclean='dockercleanimages || true && dockercleanvolumes'
+# alias dockerclean='dockercleanimages || true && dockercleanvolumes'
+alias dockerclean='docker system prune'
 
 ## DOTFILES MANAGEMENT
 # https://www.atlassian.com/git/tutorials/dotfiles
@@ -66,7 +68,8 @@ if not set -q fish_initialized
   ## git
   abbr -a g git
   abbr -a ga git add
-  abbr -a gs git status
+  abbr -a gs git switch
+  abbr -a gst git status
   abbr -a gc git commit
   abbr -a gl git log
   abbr -a gco git checkout
@@ -76,15 +79,18 @@ if not set -q fish_initialized
   abbr -a gps git push
   abbr -a gpl git pull
   abbr -a gcl git clone
+  abbr -a s spr
+  abbr -a sd spr diff
+  abbr -a sl spr land
   abbr -a c config
-
-  ## arcanist
-  abbr -a arcd 'arc diff'
-  abbr -a arcp 'arc patch'
-  abbr -a arcdb 'arc diff HEAD^ --browse'
-  abbr -a arcdr 'arc diff HEAD^ -m rebase'
-  abbr -a arcdo 'arc diff HEAD^ --only --browse'
+  abbr -a ch cht.sh
 end
+
+function cht.sh
+    curl cheat.sh/$argv
+end
+
+complete -c cht.sh -xa '(curl -s cheat.sh/:list)'
 
 # Starship prompt
 starship init fish | source
