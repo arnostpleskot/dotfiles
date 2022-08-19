@@ -12,7 +12,7 @@ if ok then
 
 	dashboard.section.buttons.val = {
 		button("C-SPC", "  Recents", "<cmd>Telescope oldfiles only_cwd=true<cr>"),
-		button("-", "  Current folder", '<cmd>lua require("telescope").extensions.vinegar.file_browser()<cr>'),
+		button("-", "  Current folder", "<cmd>Explore<cr>"),
 		button("SPC f f", "  Find File", "<cmd>Telescope find_files<cr>"),
 		button("SPC f g", "  Find Word", "<cmd>Telescope live_grep<cr>"),
 		button("SPC f m", "  Bookmarks", "<cmd>Telescope marks<cr>"),
