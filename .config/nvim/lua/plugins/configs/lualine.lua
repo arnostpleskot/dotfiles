@@ -69,7 +69,20 @@ local config = {
 	},
 	winbar = {
 		lualine_a = { { "filetype", cond = conditions.buffer_not_empty, icon_only = true } },
-		lualine_b = { { "filename", cond = conditions.buffer_not_empty, path = 1, shorting_target = 80 } },
+		lualine_b = {
+			{
+				"filename",
+				cond = conditions.buffer_not_empty,
+				path = 1,
+				shorting_target = 80,
+				symbols = {
+					modified = " ",
+					readonly = " ", -- Text to show when the file is non-modifiable or readonly.
+					unnamed = " ", -- Text to show for unnamed buffers.
+					newfile = " ",
+				},
+			},
+		},
 		lualine_c = {
 			{ navic.get_location, cond = navic.is_available },
 		},
