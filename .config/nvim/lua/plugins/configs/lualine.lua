@@ -41,6 +41,19 @@ local conditions = {
 	end,
 }
 
+local winbarFilename = {
+  "filename",
+  cond = conditions.buffer_not_empty,
+  path = 1,
+  shorting_target = 80,
+  symbols = {
+    modified = " ",
+    readonly = " ", -- Text to show when the file is non-modifiable or readonly.
+    unnamed = " ", -- Text to show for unnamed buffers.
+    newfile = " ",
+  },
+}
+
 local config = {
 	options = {
 		globalstatus = true,
@@ -70,18 +83,7 @@ local config = {
 	winbar = {
 		lualine_a = { { "filetype", cond = conditions.buffer_not_empty, icon_only = true } },
 		lualine_b = {
-			{
-				"filename",
-				cond = conditions.buffer_not_empty,
-				path = 1,
-				shorting_target = 80,
-				symbols = {
-					modified = " ",
-					readonly = " ", -- Text to show when the file is non-modifiable or readonly.
-					unnamed = " ", -- Text to show for unnamed buffers.
-					newfile = " ",
-				},
-			},
+			winbarFilename,
 		},
 		lualine_c = {
 			{ navic.get_location, cond = navic.is_available },
@@ -89,7 +91,7 @@ local config = {
 	},
 	inactive_winbar = {
 		lualine_a = { { "filetype", cond = conditions.buffer_not_empty, icon_only = true } },
-		lualine_b = { { "filename", cond = conditions.buffer_not_empty, path = 1 } },
+		lualine_b = { winbarFilename },
 		lualine_c = {},
 	},
 }
