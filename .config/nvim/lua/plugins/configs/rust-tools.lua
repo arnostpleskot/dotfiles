@@ -1,42 +1,42 @@
 local ok, rustTools = pcall(require, "rust-tools")
 
 if not ok then
-  return
+	return
 end
 
 local opts = {
-  tools = { -- rust-tools options
-    autoSetHints = true,
-    inlay_hints = {
-      show_parameter_hints = false,
-      parameter_hints_prefix = "",
-      other_hints_prefix = "",
-    },
-  },
+	tools = { -- rust-tools options
+		autoSetHints = true,
+		inlay_hints = {
+			show_parameter_hints = false,
+			parameter_hints_prefix = "",
+			other_hints_prefix = "",
+		},
+	},
 
-  -- all the opts to send to nvim-lspconfig
-  -- these override the defaults set by rust-tools.nvim
-  -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-  server = {
-    -- on_attach is a callback called when the language server attachs to the buffer
-    -- on_attach = on_attach,
-    settings = {
-      -- to enable rust-analyzer settings visit:
-      -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-      ["rust-analyzer"] = {
-        -- enable clippy on save
-        checkOnSave = {
-          command = "clippy",
-        },
-      },
-    },
-    on_attach = function(_, bufnr)
-      -- Hover actions
-      vim.keymap.set("n", "K", rustTools.hover_actions.hover_actions, { buffer = bufnr })
-      -- Code action groups
-      vim.keymap.set("n", "<Leader>a", rustTools.code_action_group.code_action_group, { buffer = bufnr })
-    end,
-  },
+	-- all the opts to send to nvim-lspconfig
+	-- these override the defaults set by rust-tools.nvim
+	-- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+	server = {
+		-- on_attach is a callback called when the language server attachs to the buffer
+		-- on_attach = on_attach,
+		settings = {
+			-- to enable rust-analyzer settings visit:
+			-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+			["rust-analyzer"] = {
+				-- enable clippy on save
+				checkOnSave = {
+					command = "clippy",
+				},
+			},
+		},
+		on_attach = function(_, bufnr)
+			-- Hover actions
+			vim.keymap.set("n", "K", rustTools.hover_actions.hover_actions, { buffer = bufnr })
+			-- Code action groups
+			vim.keymap.set("n", "<M-CR>", rustTools.code_action_group.code_action_group, { buffer = bufnr })
+		end,
+	},
 }
 
 rustTools.setup(opts)

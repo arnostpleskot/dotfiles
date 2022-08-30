@@ -28,6 +28,7 @@ local optionsV = {
 }
 
 wk.register({
+	["-"] = { "<cmd>lua require'nvim-tree'.open_replacing_current_buffer()<cr>" },
 	-- [[Illuminate]]
 	["<Tab>"] = { "<cmd>lua require'illuminate'.next_reference{wrap=true}<cr>", "[ILLUMINATE] Next reference" },
 	["<S-Tab>"] = {

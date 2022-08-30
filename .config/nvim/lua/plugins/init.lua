@@ -39,6 +39,13 @@ return packer.startup(function(use)
 	use({ "goolord/alpha-nvim", config = require("plugins.configs.alpha") })
 	use({ "kyazdani42/nvim-web-devicons", config = require("plugins.configs.icons") })
 	use({
+		"kyazdani42/nvim-tree.lua",
+		config = require("plugins.configs.nvimtree"),
+		requires = {
+			"kyazdani42/nvim-web-devicons", -- optional, for file icons
+		},
+	})
+	use({
 		"nvim-lualine/lualine.nvim",
 		config = require("plugins.configs.lualine"),
 		requires = { "kyazdani42/nvim-web-devicons", opt = true },
@@ -86,7 +93,6 @@ return packer.startup(function(use)
 	use({ "RRethy/vim-illuminate" })
 	use({ "numToStr/Comment.nvim", config = require("plugins.configs.comment") })
 	use({ "tpope/vim-rsi" })
-	use({ "tpope/vim-vinegar" })
 	use({ "beauwilliams/focus.nvim", config = require("plugins.configs.focus") })
 	use({
 		"kylechui/nvim-surround",

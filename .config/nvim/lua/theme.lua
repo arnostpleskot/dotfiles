@@ -55,7 +55,7 @@ _M.init = function()
 				VertSplit = { fg = _M.colors.grey14 },
 				BufferLineIndicatorSelected = { fg = _M.colors.cyan, bg = _M.colors.bg },
 				BufferLineFill = { fg = _M.colors.fg, bg = _M.colors.grey14 },
-				NvimTreeNormal = { fg = _M.colors.grey5, bg = _M.colors.grey14 },
+				NvimTreeNormal = { fg = _M.colors.grey5, bg = _M.colors.bg },
 				WhichKeyFloat = { bg = _M.colors.grey14 },
 				GitSignsAdd = { fg = _M.colors.green },
 				GitSignsChange = { fg = _M.colors.orange },
