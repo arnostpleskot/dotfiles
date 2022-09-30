@@ -35,7 +35,8 @@ return packer.startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 
 	-- UI
-	use({ "rmehri01/onenord.nvim" })
+	use({ "ellisonleao/gruvbox.nvim" })
+
 	use({ "goolord/alpha-nvim", config = require("plugins.configs.alpha") })
 	use({ "kyazdani42/nvim-web-devicons", config = require("plugins.configs.icons") })
 	use({

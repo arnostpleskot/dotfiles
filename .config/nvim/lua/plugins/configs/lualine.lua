@@ -5,30 +5,7 @@ if not ok then
 end
 
 local colors = require("theme").colors
-local powerline = require("utils").powerline.triangle
 local navic = require("nvim-navic")
-
-local mode_color = {
-	n = colors.cyan,
-	i = colors.green,
-	v = colors.magenta,
-	V = colors.pink,
-	["\22"] = colors.yellow,
-	c = colors.red,
-	no = colors.magenta,
-	s = colors.orange,
-	[""] = colors.orange,
-	ic = colors.yellow,
-	R = colors.magenta,
-	Rv = colors.magenta,
-	cv = colors.red,
-	ce = colors.red,
-	r = colors.cyan,
-	rm = colors.cyan,
-	["r?"] = colors.cyan,
-	["!"] = colors.red,
-	t = colors.red,
-}
 
 local conditions = {
 	buffer_not_empty = function()
@@ -41,155 +18,44 @@ local conditions = {
 	end,
 }
 
+local bubbles_theme = {
+	normal = {
+		a = { fg = colors.fg3, bg = colors.bg2, gui = "bold" },
+		b = { fg = colors.fg3, bg = colors.bg1 },
+		c = { fg = colors.bg2, bg = colors.bg0 },
+		z = { fg = colors.bg0, bg = colors.bg3 },
+	},
+
+	insert = { a = { fg = colors.bg0, bg = colors.blue } },
+	visual = { a = { fg = colors.bg0, bg = colors.cyan } },
+	replace = { a = { fg = colors.bg0, bg = colors.red } },
+}
+
 local winbarFilename = {
-  "filename",
-  cond = conditions.buffer_not_empty,
-  path = 1,
-  shorting_target = 80,
-  symbols = {
-    modified = " ",
-    readonly = " ", -- Text to show when the file is non-modifiable or readonly.
-    unnamed = " ", -- Text to show for unnamed buffers.
-    newfile = " ",
-  },
-}
-
-local config = {
-	options = {
-		globalstatus = true,
-		component_separators = "",
-		section_separators = "",
-		theme = {
-			normal = { c = { fg = colors.grey9, bg = colors.grey13 } },
-			inactive = { c = { fg = colors.grey9, bg = colors.bg } },
-		},
-	},
-	sections = {
-		lualine_a = {},
-		lualine_b = {},
-		lualine_y = {},
-		lualine_z = {},
-		lualine_c = {},
-		lualine_x = {},
-	},
-	inactive_sections = {
-		lualine_a = {},
-		lualine_v = {},
-		lualine_y = {},
-		lualine_z = {},
-		lualine_c = {},
-		lualine_x = {},
-	},
-	winbar = {
-		lualine_a = { { "filetype", cond = conditions.buffer_not_empty, icon_only = true } },
-		lualine_b = {
-			winbarFilename,
-		},
-		lualine_c = {
-			{ navic.get_location, cond = navic.is_available },
-		},
-	},
-	inactive_winbar = {
-		lualine_a = { { "filetype", cond = conditions.buffer_not_empty, icon_only = true } },
-		lualine_b = { winbarFilename },
-		lualine_c = {},
-	},
-}
-
-local function ins_left(component)
-	table.insert(config.sections.lualine_c, component)
-end
-
-local function ins_right(component)
-	table.insert(config.sections.lualine_x, component)
-end
-
-local function ins_left_inactive(component)
-	table.insert(config.inactive_sections.lualine_c, component)
-end
-
-local function ins_right_inactive(component)
-	table.insert(config.inactive_sections.lualine_x, component)
-end
-
-ins_left({
-	function()
-		vim.api.nvim_command("hi LualineViModeStart guibg=" .. mode_color[vim.fn.mode()])
-		return " "
-	end,
-	color = "LualineViModeStart",
-	padding = { right = 0 },
-})
-
-ins_left({
-	function()
-		vim.api.nvim_command(
-			"hi LualineViMode guifg="
-				.. mode_color[vim.fn.mode()]
-				.. " guibg="
-				.. colors.grey14
-				.. " gui=bold cterm=bold"
-		)
-		return require("lualine.utils.mode").get_mode()
-	end,
-	icons_enabled = true,
-	color = "LualineViMode",
-	padding = { right = 1, left = 1 },
-})
-
-ins_left({
-	function()
-		return powerline.right
-	end,
-	color = { fg = colors.grey14, bg = colors.grey13 },
-	padding = 0,
-})
-
-ins_left({
-	"filetype",
-	fmt = string.upper,
-	icons_enabled = true,
-	color = { fg = colors.grey9, bg = colors.grey13 },
-})
-
--- ins_left({
--- 	"filename",
--- 	cond = conditions.buffer_not_empty,
--- 	color = { fg = colors.grey9, gui = "italic" },
--- })
-
-ins_left({
-	"filesize",
-	icon = "",
+	"filename",
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.grey9 },
-})
+	path = 1,
+	shorting_target = 80,
+	symbols = {
+		modified = " ",
+		readonly = " ", -- Text to show when the file is non-modifiable or readonly.
+		unnamed = " ", -- Text to show for unnamed buffers.
+		newfile = " ",
+	},
+}
 
--- ins_left { "location", icon = "", color = { fg = colors.grey9 } }
-
--- ins_left { "progress", color = { fg = colors.grey9, gui = "bold" } }
-
-ins_left({
+local diagnostics = {
 	"diagnostics",
 	sources = { "nvim_diagnostic" },
 	symbols = { error = " ", warn = " ", info = " ", hint = " " },
 	diagnostics_color = {
 		color_error = { fg = colors.red },
 		color_warn = { fg = colors.yellow },
-		color_info = { fg = colors.cyan },
+		color_info = { fg = colors.blue },
 	},
-})
+}
 
-ins_left({
-	function()
-		return "%="
-	end,
-})
-
-ins_right({ "location", icon = "", color = { fg = colors.grey9 } })
-ins_right({ "progress" })
-
-ins_right({
+local lsp = {
 	function()
 		local msg = "No Active Lsp"
 		local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
@@ -209,90 +75,78 @@ ins_right({
 	end,
 	icon = "",
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.grey9 },
-})
+}
 
--- Add components to right sections
-ins_right({
-	"o:encoding",
-	fmt = string.upper,
-	cond = conditions.buffer_not_empty,
-	color = { fg = colors.grey9 },
-})
-
-ins_right({
-	"fileformat",
-	fmt = string.upper,
-	cond = conditions.buffer_not_empty,
-	icons_enabled = true,
-	color = { fg = colors.grey9 },
-})
-
-ins_right({
-	function()
-		return vim.opt.tabstop:get()
-	end,
-	icon = "הּ",
-	cond = conditions.buffer_not_empty,
-	color = { fg = colors.grey9 },
-})
-
-ins_right({
-	function()
-		return powerline.left
-	end,
-	color = { fg = colors.grey14, bg = colors.grey13 },
-	cond = conditions.check_git_workspace,
-	padding = 0,
-})
-
-ins_right({
-	"branch",
-	icon = "",
-	cond = conditions.check_git_workspace,
-	color = { fg = colors.magenta, bg = colors.grey14, gui = "bold" },
-})
-
-ins_right({
+local diff = {
 	"diff",
 	symbols = { added = " ", modified = " ", removed = " " },
 	diff_color = {
-		added = { fg = colors.green, bg = colors.grey14 },
-		modified = { fg = colors.orange, bg = colors.grey14 },
-		removed = { fg = colors.red, bg = colors.grey14 },
+		added = { fg = colors.green },
+		modified = { fg = colors.orange },
+		removed = { fg = colors.red },
+	},
+	color = {
+		bg = colors.bg0,
+	},
+}
+
+lualine.setup({
+	options = {
+		theme = bubbles_theme,
+		component_separators = "|",
+		section_separators = { left = "", right = "" },
+	},
+	sections = {
+		lualine_a = {
+			{ "mode", separator = { left = " " }, right_padding = 2 },
+		},
+		lualine_b = { "filetype" },
+		lualine_c = { lsp, diagnostics },
+		lualine_x = { diff },
+		lualine_y = { "branch" },
+		lualine_z = {
+			"progress",
+			{ "location", separator = { right = " " }, left_padding = 2 },
+		},
+	},
+	inactive_sections = {
+		lualine_a = { "filename" },
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = { "location" },
+	},
+	tabline = {},
+	extensions = {},
+	winbar = {
+		lualine_a = {
+			{
+				"filetype",
+				cond = conditions.buffer_not_empty,
+				icon_only = true,
+				separator = { left = " " },
+				colored = false,
+			},
+		},
+		lualine_b = {
+			winbarFilename,
+		},
+		lualine_c = {
+			{ navic.get_location, cond = navic.is_available },
+		},
+	},
+	inactive_winbar = {
+		lualine_a = {
+			{
+				"filetype",
+				cond = conditions.buffer_not_empty,
+				icon_only = true,
+				separator = { left = " " },
+				colored = false,
+			},
+		},
+		lualine_b = { winbarFilename },
+		lualine_c = {},
 	},
 })
-
-ins_right({
-	function()
-		vim.api.nvim_command("hi LualineViModeEnd guibg=" .. mode_color[vim.fn.mode()])
-		return " "
-	end,
-	color = "LualineViModeEnd",
-	padding = { right = 0 },
-})
-
--- Inactive
-ins_left_inactive({
-	function()
-		return " "
-	end,
-	color = { bg = colors.grey9 },
-	padding = { right = 0 },
-})
-
-ins_left_inactive({
-	"filename",
-	cond = conditions.buffer_not_empty,
-	color = { fg = colors.grey9, bg = colors.grey14, gui = "bold" },
-})
-
-ins_left_inactive({
-	function()
-		return powerline.right
-	end,
-	color = { fg = colors.grey14, bg = colors.bg },
-	padding = 0,
-})
-
-lualine.setup(config)

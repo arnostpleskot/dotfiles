@@ -1,92 +1,80 @@
-local _M = {}
-
-_M.colors = {
-	bg = "#2e3440",
-	fg = "#ECEFF4",
-	red = "#bf616a",
-	orange = "#d08770",
-	yellow = "#ebcb8b",
-	blue = "#5e81ac",
-	green = "#a3be8c",
-	cyan = "#88c0d0",
-	magenta = "#b48ead",
-	pink = "#FFA19F",
-	grey1 = "#f8fafc",
-	grey2 = "#f0f1f4",
-	grey3 = "#eaecf0",
-	grey4 = "#d9dce3",
-	grey5 = "#c4c9d4",
-	grey6 = "#b5bcc9",
-	grey7 = "#929cb0",
-	grey8 = "#8e99ae",
-	grey9 = "#74819a",
-	grey10 = "#616d85",
-	grey11 = "#464f62",
-	grey12 = "#3a4150",
-	grey13 = "#333a47",
-	grey14 = "#242932",
-	grey15 = "#1e222a",
-	grey16 = "#1c1f26",
-	grey17 = "#0f1115",
-	grey18 = "#0d0e11",
-	grey19 = "#020203",
+local gruvbox = require("utils").safeLoad("gruvbox")
+local _M = {
+	colors = {},
 }
 
+if gruvbox then
+	local theme = require("gruvbox.groups").setup()
+	_M.colors = {
+		bg0 = theme.GruvboxBg0.fg,
+		bg0_soft = "#32302f",
+		bg0_hard = "#1d2021",
+		bg1 = theme.GruvboxBg1.fg,
+		bg2 = theme.GruvboxBg2.fg,
+		bg3 = theme.GruvboxBg3.fg,
+		bg4 = theme.GruvboxBg4.fg,
+		fg1 = theme.GruvboxFg1.fg,
+		fg2 = theme.GruvboxFg2.fg,
+		fg3 = theme.GruvboxFg3.fg,
+		fg4 = theme.GruvboxFg4.fg,
+
+		yellow = theme.GruvboxYellow.fg,
+		blue = theme.GruvboxBlue.fg,
+		aqua = theme.GruvboxAqua.fg,
+		orange = theme.GruvboxOrange.fg,
+		red = theme.GruvboxRed.fg,
+		green = theme.GruvboxGreen.fg,
+		purple = theme.GruvboxPurple.fg,
+	}
+end
+
 _M.init = function()
-	local isExistNord, onenord = pcall(require, "onenord")
-	if isExistNord then
-		onenord.setup({
-			borders = true,
-			fade_nc = false,
-			styles = {
-				comments = "italic",
-				strings = "NONE",
-				keywords = "NONE",
-				functions = "italic",
-				variables = "bold",
-				diagnostics = "underline",
+	if gruvbox then
+		vim.o.background = "dark" -- or "light" for light mode
+
+		gruvbox.setup({
+			undercurl = true,
+			underline = true,
+			bold = true,
+			italic = true,
+			strikethrough = true,
+			invert_selection = false,
+			invert_signs = false,
+			invert_tabline = false,
+			invert_intend_guides = false,
+			inverse = true, -- invert background for search, diffs, statuslines and errors
+			contrast = "", -- can be "hard", "soft" or empty string
+			overrides = {
+				CursorLine = { bg = "#32302f" },
+				CursorLineNr = { bg = "#32302f" },
+				StatusLine = { bg = _M.colors.bg0 },
+				SignColumn = { bg = _M.colors.bg0 },
+				StatusLineNC = { bg = _M.colors.bg0 },
+				FoldColumn = { bg = _M.colors.bg0 },
+				ColorColumn = { bg = _M.colors.bg0 },
+				GruvboxRedSign = { bg = _M.colors.bg0 },
+				GruvboxGreenSign = { bg = _M.colors.bg0 },
+				GruvboxYellowSign = { bg = _M.colors.bg0 },
+				GruvboxBlueSign = { bg = _M.colors.bg0 },
+				GruvboxPurpleSign = { bg = _M.colors.bg0 },
+				GruvboxAquaSign = { bg = _M.colors.bg0 },
+				GruvboxOrangeSign = { bg = _M.colors.bg0 },
+				TelescopePromptPrefix = { bg = _M.colors.bg1 },
+				TelescopePromptNormal = { bg = _M.colors.bg1 },
+				TelescopeResultsNormal = { bg = _M.colors.bg0_hard },
+				TelescopePreviewNormal = { bg = _M.colors.bg0_soft },
+				TelescopePromptBorder = { bg = _M.colors.bg1, fg = _M.colors.bg1 },
+				TelescopeResultsBorder = { bg = _M.colors.bg0_hard, fg = _M.colors.bg0_hard },
+				TelescopePreviewBorder = { bg = _M.colors.bg0_soft, fg = _M.colors.bg0_soft },
+				TelescopePromptTitle = { fg = _M.colors.bg1 },
+				TelescopeResultsTitle = { fg = _M.colors.bg0_hard },
+				TelescopePreviewTitle = { fg = _M.colors.bg0_soft },
+				Pmenu = { bg = _M.colors.bg0_soft },
 			},
-			disable = {
-				background = false,
-				cursorline = false,
-				eob_lines = true,
-			},
-			custom_highlights = {
-				VertSplit = { fg = _M.colors.grey14 },
-				BufferLineIndicatorSelected = { fg = _M.colors.cyan, bg = _M.colors.bg },
-				BufferLineFill = { fg = _M.colors.fg, bg = _M.colors.grey14 },
-				NvimTreeNormal = { fg = _M.colors.grey5, bg = _M.colors.bg },
-				WhichKeyFloat = { bg = _M.colors.grey14 },
-				GitSignsAdd = { fg = _M.colors.green },
-				GitSignsChange = { fg = _M.colors.orange },
-				GitSignsDelete = { fg = _M.colors.red },
-				NvimTreeFolderIcon = { fg = _M.colors.grey9 },
-				NvimTreeIndentMarker = { fg = _M.colors.grey12 },
-
-				NormalFloat = { bg = _M.colors.grey14 },
-				FloatBorder = { bg = _M.colors.grey14, fg = _M.colors.grey14 },
-
-				TelescopePromptPrefix = { bg = _M.colors.grey13 },
-				TelescopePromptNormal = { bg = _M.colors.grey13 },
-				TelescopeResultsNormal = { bg = _M.colors.grey15 },
-				TelescopePreviewNormal = { bg = _M.colors.grey16 },
-
-				TelescopePromptBorder = { bg = _M.colors.grey13, fg = _M.colors.grey13 },
-				TelescopeResultsBorder = { bg = _M.colors.grey15, fg = _M.colors.grey15 },
-				TelescopePreviewBorder = { bg = _M.colors.grey16, fg = _M.colors.grey16 },
-
-				TelescopePromptTitle = { fg = _M.colors.grey13 },
-				TelescopeResultsTitle = { fg = _M.colors.grey15 },
-				TelescopePreviewTitle = { fg = _M.colors.grey16 },
-
-				PmenuSel = { bg = _M.colors.grey12 },
-				Pmenu = { bg = _M.colors.grey14 },
-				PMenuThumb = { bg = _M.colors.grey16 },
-
-				LspFloatWinNormal = { fg = _M.colors.fg, bg = _M.colors.grey14 },
-				LspFloatWinBorder = { fg = _M.colors.grey14 },
-			},
+			dim_inactive = false,
+			transparent_mode = false,
 		})
+		vim.cmd("colorscheme gruvbox")
 	end
 end
 

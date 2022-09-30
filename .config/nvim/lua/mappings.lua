@@ -28,7 +28,7 @@ local optionsV = {
 }
 
 wk.register({
-	["-"] = { "<cmd>lua require'nvim-tree'.open_replacing_current_buffer()<cr>" },
+	["-"] = { "<cmd>lua require'nvim-tree'.open_replacing_current_buffer()<cr>", "[NVIM TREE] open file navigator" },
 	-- [[Illuminate]]
 	["<Tab>"] = { "<cmd>lua require'illuminate'.next_reference{wrap=true}<cr>", "[ILLUMINATE] Next reference" },
 	["<S-Tab>"] = {
@@ -72,6 +72,7 @@ wk.register({
 		["\\"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
 		["|"] = { "<cmd>vsplit<CR>", "[Window] split vertical" },
 		["-"] = { "<cmd>split<CR>", "[Window] split horizontal" },
+		["_"] = { "<cmd>split<CR>", "[Window] split horizontal" },
 		h = { "<C-w>K", "[Window] vertical to horizontal" },
 		v = { "<C-w>H", "[Window] horizontal to vertical" },
 

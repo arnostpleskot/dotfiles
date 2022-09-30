@@ -7,5 +7,13 @@ end
 neorg.setup({
 	load = {
 		["core.defaults"] = {},
+		["core.norg.dirman"] = {
+			config = {
+				workspaces = {
+					notes = "~/Documents/Norg/Notes/",
+					journal = "~/Documents/Norg/Journal",
+				},
+			},
+		},
 	},
 })

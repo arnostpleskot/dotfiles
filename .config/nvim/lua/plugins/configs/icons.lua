@@ -20,12 +20,12 @@ web_devicons.setup({
 		},
 		scss = {
 			icon = "",
-			color = colors.pink,
+			color = colors.purple,
 			name = "scss",
 		},
 		sass = {
 			icon = "",
-			color = colors.pink,
+			color = colors.purple,
 			name = "sass",
 		},
 		js = {
@@ -45,17 +45,17 @@ web_devicons.setup({
 		},
 		png = {
 			icon = "",
-			color = colors.magenta,
+			color = colors.purple,
 			name = "png",
 		},
 		jpg = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "jpg",
 		},
 		jpeg = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "jpeg",
 		},
 		mp3 = {
@@ -100,12 +100,12 @@ web_devicons.setup({
 		},
 		zip = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "zip",
 		},
 		xz = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "xz",
 		},
 		deb = {
@@ -130,12 +130,12 @@ web_devicons.setup({
 		},
 		md = {
 			icon = "",
-			color = colors.magenta,
+			color = colors.purple,
 			name = "markdown",
 		},
 		graphql = {
 			icon = "",
-			color = colors.pink,
+			color = colors.purple,
 			name = "graphql",
 		},
 		env = {
@@ -170,7 +170,7 @@ web_devicons.setup({
 		},
 		["docker-compose.yml"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "dockercompose",
 		},
 		[".dockerignore"] = {
@@ -185,27 +185,27 @@ web_devicons.setup({
 		},
 		[".prettierrc"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "prettier",
 		},
 		[".prettierrc.json"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "prettierjson",
 		},
 		[".prettierrc.js"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "prettierrcjs",
 		},
 		["prettier.config.js"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "prettierjsconfig",
 		},
 		[".prettier.yaml"] = {
 			icon = "",
-			color = colors.cyan,
+			color = colors.aqua,
 			name = "prettieryaml",
 		},
 		["test.js"] = {
@@ -285,7 +285,7 @@ web_devicons.setup({
 		},
 		[".eslintrc.js"] = {
 			icon = "ﯶ",
-			color = colors.magenta,
+			color = colors.purple,
 			name = "eslintrcjs",
 		},
 		[".travis.yml"] = {
