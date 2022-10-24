@@ -62,7 +62,7 @@ wk.register({
 	-- [[ UI ]]
 	["<leader>u"] = {
 		name = "[UI]",
-		u = { "<cmd>UndotreeToggle<cr>", "[UI] Undotree" },
+		u = { "<cmd>lua require('undotree').toggle()<cr>", "[UI] Undotree" },
 		a = { "<cmd>Alpha<cr>", "[UI] Alpha" },
 	},
 
@@ -121,7 +121,7 @@ wk.register({
 	[">"] = { ">gv", "Shift to right" },
 }, optionsV)
 
-wk.register({
+local colemak = {
 	-- Colemak
 	-- movement
 	m = { "h", "move Left" },
@@ -142,6 +142,10 @@ wk.register({
 	-- moving on line
 	["<A-m>"] = { "g^", "move cursor to start of line" },
 	["<A-i>"] = { "g$", "move cursor to end of line" },
-}, options)
+}
+
+wk.register(colemak, options)
+wk.register(colemak, optionsV)
+wk.register(colemak, optionsN)
 
 wk.setup({})

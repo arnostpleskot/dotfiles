@@ -35,7 +35,7 @@ return packer.startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 
 	-- UI
-	use({ "ellisonleao/gruvbox.nvim" })
+	use("folke/tokyonight.nvim")
 
 	use({ "goolord/alpha-nvim", config = require("plugins.configs.alpha") })
 	use({ "kyazdani42/nvim-web-devicons", config = require("plugins.configs.icons") })
@@ -52,7 +52,13 @@ return packer.startup(function(use)
 		requires = { "kyazdani42/nvim-web-devicons", opt = true },
 	})
 	use({ "folke/which-key.nvim" })
-	use({ "jiaoshijie/undotree" })
+	use({
+		"jiaoshijie/undotree",
+		config = require("plugins.configs.undotree"),
+		requires = {
+			"nvim-lua/plenary.nvim",
+		},
+	})
 
 	-- Syntax
 	use({

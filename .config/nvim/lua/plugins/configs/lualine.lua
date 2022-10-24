@@ -18,19 +18,6 @@ local conditions = {
 	end,
 }
 
-local bubbles_theme = {
-	normal = {
-		a = { fg = colors.fg3, bg = colors.bg2, gui = "bold" },
-		b = { fg = colors.fg3, bg = colors.bg1 },
-		c = { fg = colors.bg2, bg = colors.bg0 },
-		z = { fg = colors.bg0, bg = colors.bg3 },
-	},
-
-	insert = { a = { fg = colors.bg0, bg = colors.blue } },
-	visual = { a = { fg = colors.bg0, bg = colors.cyan } },
-	replace = { a = { fg = colors.bg0, bg = colors.red } },
-}
-
 local winbarFilename = {
 	"filename",
 	cond = conditions.buffer_not_empty,
@@ -92,13 +79,13 @@ local diff = {
 
 lualine.setup({
 	options = {
-		theme = bubbles_theme,
+		-- theme = bubbles_theme,
+		theme = "tokyonight",
 		component_separators = "|",
-		section_separators = { left = "", right = "" },
 	},
 	sections = {
 		lualine_a = {
-			{ "mode", separator = { left = " " }, right_padding = 2 },
+			"mode",
 		},
 		lualine_b = { "filetype" },
 		lualine_c = { lsp, diagnostics },
@@ -106,7 +93,7 @@ lualine.setup({
 		lualine_y = { "branch" },
 		lualine_z = {
 			"progress",
-			{ "location", separator = { right = " " }, left_padding = 2 },
+			"location",
 		},
 	},
 	inactive_sections = {
@@ -125,7 +112,6 @@ lualine.setup({
 				"filetype",
 				cond = conditions.buffer_not_empty,
 				icon_only = true,
-				separator = { left = " " },
 				colored = false,
 			},
 		},
@@ -142,7 +128,6 @@ lualine.setup({
 				"filetype",
 				cond = conditions.buffer_not_empty,
 				icon_only = true,
-				separator = { left = " " },
 				colored = false,
 			},
 		},
