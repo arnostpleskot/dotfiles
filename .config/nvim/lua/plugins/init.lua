@@ -84,6 +84,13 @@ return packer.startup(function(use)
 		},
 		config = require("plugins.configs.context"),
 	})
+	use({
+		"m-demare/hlargs.nvim",
+		requires = { "nvim-treesitter/nvim-treesitter" },
+		config = function()
+			require("hlargs").setup()
+		end,
+	})
 
 	-- Utilities
 	use({ "lukas-reineke/indent-blankline.nvim", config = require("plugins.configs.indent") })

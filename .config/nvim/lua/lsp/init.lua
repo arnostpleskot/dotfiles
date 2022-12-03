@@ -19,6 +19,7 @@ local servers = {
 	"dockerls",
 	"sumneko_lua",
 	"tsserver",
+	"tailwindcss",
 }
 
 -- Floating border
