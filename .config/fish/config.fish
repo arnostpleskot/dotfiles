@@ -2,7 +2,7 @@
 source ~/.asdf/asdf.fish
 
 # theme
-source ~/.config/fish/theme/tokyonight_storm.fish
+source ~/.config/fish/themes/tokyonight_storm.fish
 
 if status is-interactive
 and not set -q TMUX
@@ -70,8 +70,12 @@ if not set -q fish_initialized
 
   ## git
   abbr -a g git
-  abbr -a ga git add
-  abbr -a gs git switch
+  abbr -a ga git amend
+  abbr -a gad git add
+  abbr -a gs git spr
+  abbr -a gsu git spr up
+  abbr -a gss git spr status
+  abbr -a gsw git switch
   abbr -a gst git status
   abbr -a gc git commit
   abbr -a gl git log
