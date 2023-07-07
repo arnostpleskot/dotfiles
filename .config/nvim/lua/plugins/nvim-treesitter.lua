@@ -20,11 +20,13 @@ return {
         "python",
         "query",
         "regex",
+        "rust",
         "tsx",
         "typescript",
         "vim",
         "yaml",
       },
+      ignore_install = { "help" },
     },
   },
 }

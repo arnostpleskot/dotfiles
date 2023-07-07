@@ -46,3 +46,7 @@ map("n", "T", "I")
 -- Search remap
 map("n", "k", "N", { desc = "Find previous" })
 map("n", "h", "n", { desc = "Find next" })
+
+-- move half page up/down
+map("n", "<C-l>", "<C-u>zz", { desc = "Move half page up" })
+map("n", "<C-h>", "<C-d>zz", { desc = "Move half page down" })
