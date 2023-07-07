@@ -12,6 +12,6 @@ return {
 	color_scheme = "tokyonight_moon",
 	-- color_scheme = "Catppuccin Frappe",
 	enable_tab_bar = false,
-	window_decorations = "NONE",
+	-- window_decorations = "NONE",
 	warn_about_missing_glyphs = false,
 }
