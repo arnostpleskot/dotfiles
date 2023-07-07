@@ -5,7 +5,7 @@ source ~/.asdf/asdf.fish
 source ~/.config/fish/themes/tokyonight_storm.fish
 
 if status is-interactive
-and not set -q TMUX
+    and not set -q TMUX
     exec tmux
 end
 
@@ -63,34 +63,29 @@ alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 # ABREVATIONS
 
 if not set -q fish_initialized
-  abbr -a n nvim
-  abbr -a r ranger
-  abbr -a t tig
-  abbr -a m make
+    abbr -a n nvim
+    abbr -a t tig
+    abbr -a m make
+    abbr -a c config
+    abbr -a ch cht.sh
+    abbr -a y yarn
+    abbr -a p pnpm
 
-  ## git
-  abbr -a g git
-  abbr -a ga git amend
-  abbr -a gad git add
-  abbr -a gs git spr
-  abbr -a gsu git spr up
-  abbr -a gss git spr status
-  abbr -a gsw git switch
-  abbr -a gst git status
-  abbr -a gc git commit
-  abbr -a gl git log
-  abbr -a gco git checkout
-  abbr -a gd git diff
-  abbr -a gr git rebase
-  abbr -a gm git merge
-  abbr -a gps git push
-  abbr -a gpl git pull
-  abbr -a gcl git clone
-  abbr -a s spr
-  abbr -a sd spr diff
-  abbr -a sl spr land
-  abbr -a c config
-  abbr -a ch cht.sh
+    ## git
+    abbr -a g git
+    abbr -a ga git add
+    abbr -a gs git switch
+    abbr -a gst git status
+    abbr -a gc git commit
+    abbr -a gl git log
+    abbr -a gco git checkout
+    abbr -a gd git diff
+    abbr -a gr git rebase
+    abbr -a gm git merge
+    abbr -a gps git push
+    abbr -a gpl git pull
+    abbr -a gcl git clone
+
 end
 
 function cht.sh
