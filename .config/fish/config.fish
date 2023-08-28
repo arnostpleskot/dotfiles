@@ -12,12 +12,6 @@ set -g ANDROID_HOME $HOME/Android/Sdk
 
 # PATH
 set -x PATH $PATH $HOME/bin
-set -x ANDROID_SDK_ROOT $ANDROID_HOME
-set -x PATH $PATH /home/arnost/Projects/phabricator/arcanist/bin
-set -x PATH $PATH $ANDROID_HOME/emulator
-set -x PATH $PATH $ANDROID_HOME/tools
-set -x PATH $PATH $ANDROID_HOME/tools/bin
-set -x PATH $PATH $ANDROID_HOME/platform-tools
 
 # FZF
 
