@@ -1,9 +1,6 @@
 # asdf
 source ~/.asdf/asdf.fish
 
-# theme
-source ~/.config/fish/themes/tokyonight_storm.fish
-
 if status is-interactive
     and not set -q TMUX
     exec tmux
