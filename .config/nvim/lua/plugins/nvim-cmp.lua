@@ -16,8 +16,6 @@ return {
       opts.sources = cmp.config.sources(vim.list_extend(opts.sources, {
         { name = "emoji", priority = 1 },
         { name = "conventionalcommits" },
-        { name = "copilot", priority = 1 },
-        { name = "crates" },
       }))
     end,
   },
