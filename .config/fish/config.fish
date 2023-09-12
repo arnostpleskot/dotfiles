@@ -85,5 +85,11 @@ end
 
 complete -c cht.sh -xa '(curl -s cheat.sh/:list)'
 
+function fish_greeting
+    echo (~/.config/fish/daily-fact.fish --no-intro) | cowsay -f dragon-and-cow | lolcat
+end
+
+set -U fish_greeting
+
 # Starship prompt
 starship init fish | source
