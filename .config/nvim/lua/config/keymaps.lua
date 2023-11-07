@@ -5,6 +5,10 @@
 local map = vim.keymap.set
 local Util = require("lazyvim.util")
 
+map("n", "<C-s>", "<cmd>wa<cr>", { desc = "Save all" })
+
+map("n", "<leader>uo", "<cmd>SymbolsOutline<cr>", { desc = "Toggle Symbols Outline" })
+
 -- Colemak
 -- better up/down
 map("n", "n", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
