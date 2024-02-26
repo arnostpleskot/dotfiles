@@ -6,8 +6,7 @@ local map = vim.keymap.set
 local Util = require("lazyvim.util")
 
 map("n", "<C-s>", "<cmd>wa<cr>", { desc = "Save all" })
-
-map("n", "<leader>uo", "<cmd>SymbolsOutline<cr>", { desc = "Toggle Symbols Outline" })
+map("n", "<leader>fP", "<cmd>let @+=expand('%')<cr>", { desc = "Copy file path to clipboard" })
 
 -- Colemak
 -- better up/down

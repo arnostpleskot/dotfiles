@@ -1,14 +1,16 @@
 return {
   "f-person/auto-dark-mode.nvim",
-  config = {
+  priority = 10000,
+  lazy = false,
+  opts = {
     update_interval = 1000,
     set_dark_mode = function()
-      -- vim.api.nvim_set_option("background", "dark")
-      vim.cmd("colorscheme catppuccin-frappe")
+      vim.api.nvim_set_option("background", "dark")
+      -- vim.cmd("colorscheme catppuccin-frappe")
     end,
     set_light_mode = function()
-      -- vim.api.nvim_set_option("background", "light")
-      vim.cmd("colorscheme catppuccin-latte")
+      vim.api.nvim_set_option("background", "light")
+      -- vim.cmd("colorscheme catppuccin-latte")
     end,
   },
 }

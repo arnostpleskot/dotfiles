@@ -1,10 +1,10 @@
 # asdf
 source ~/.asdf/asdf.fish
 
-if status is-interactive
-    and not set -q TMUX
-    exec tmux
-end
+# if status is-interactive
+#     and not set -q TMUX
+#     exec tmux
+# end
 
 set -g -x EDITOR nvim
 set -x GPG_TTY (tty)
@@ -55,7 +55,7 @@ alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 if not set -q fish_initialized
     abbr -a n nvim
-    abbr -a t tig
+    abbr -a t lazygit
     abbr -a m make
     abbr -a c config
     abbr -a ch cht.sh
@@ -97,6 +97,12 @@ starship init fish | source
 # pnpm
 set -gx PNPM_HOME "/home/arnost/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+
+# dotnet via asdf
+source ~/.asdf/plugins/dotnet/set-dotnet-env.fish
+
+# opam configuration
+source /home/arnost/.opam/opam-init/init.fish >/dev/null 2>/dev/null; or true

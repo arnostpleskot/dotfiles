@@ -11,6 +11,7 @@ return {
         "css",
         "bash",
         "fish",
+        "fsharp",
         "help",
         "html",
         "javascript",
