@@ -1,11 +1,7 @@
 local wezterm = require("wezterm")
 
-local updatedFrappeScheme = wezterm.get_builtin_color_schemes()["Catppuccin Frappe"]
-updatedFrappeScheme.background = "#2E3440"
-updatedFrappeScheme.tab_bar.background = "#2E3440"
-local updatedLatteScheme = wezterm.get_builtin_color_schemes()["Catppuccin Latte"]
-updatedLatteScheme.background = "#FFFFFF"
-updatedLatteScheme.tab_bar.background = "#FFFFFF"
+local theme_dark = require("lua/rose-pine")
+local theme_light = require("lua/rose-pine-dawn")
 
 -- wezterm.gui is not available to the mux server, so take care to
 -- do something reasonable when this config is evaluated by the mux
@@ -16,19 +12,11 @@ local function get_appearance()
 	return "Dark"
 end
 
-local function scheme_for_appearance(appearance)
-	if appearance:find("Dark") then
-		return "Catppuccin Frappe"
-	else
-		return "Catppuccin Latte"
-	end
-end
-
-local function get_updated_scheme()
+local function get_scheme()
 	if get_appearance():find("Dark") then
-		return updatedFrappeScheme
+		return theme_dark.colors()
 	else
-		return updatedLatteScheme
+		return theme_light.colors()
 	end
 end
 
@@ -59,18 +47,19 @@ local function countDigits(number)
 end
 
 wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
-	local scheme = get_updated_scheme()
+	local scheme = get_scheme()
 	local edge_background = scheme.background
 
-	local highlight = scheme.selection_bg
+	local highlight = scheme.tab_bar.inactive_tab.fg_color
 	local background = scheme.tab_bar.inactive_tab.bg_color
-	local foreground = scheme.selection_bg
+	local foreground = scheme.tab_bar.inactive_tab.fg_color
 
 	if tab.is_active then
-		highlight = scheme.tab_bar.active_tab.bg_color
+		highlight = scheme.brights[2]
+		background = scheme.tab_bar.active_tab.bg_color
 		foreground = scheme.tab_bar.inactive_tab.fg_color
 	elseif hover then
-		background = scheme.tab_bar.new_tab.bg_color
+		background = scheme.tab_bar.active_tab.bg_color
 		foreground = scheme.tab_bar.inactive_tab.fg_color
 	end
 
@@ -100,7 +89,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 end)
 
 wezterm.on("update-right-status", function(window)
-	local scheme = get_updated_scheme()
+	local scheme = get_scheme()
 	local leader = ""
 	if window:leader_is_active() then
 		leader = wezterm.format({
@@ -117,6 +106,7 @@ wezterm.on("update-right-status", function(window)
 end)
 
 return {
+	scrollback_lines = 28000,
 	pane_focus_follows_mouse = true,
 	-- Hypelinks --------------------
 	hyperlink_rules = {
@@ -161,24 +151,7 @@ return {
 	font_size = 14,
 
 	-- Colors -------------------------
-	color_schemes = {
-		["Catppuccin Frappe"] = updatedFrappeScheme,
-		["Catppuccin Latte"] = updatedLatteScheme,
-	},
-	color_scheme = scheme_for_appearance(get_appearance()),
-	colors = {
-		tab_bar = {
-			background = wezterm.color.parse(get_updated_scheme().background),
-			new_tab = {
-				bg_color = wezterm.color.parse(get_updated_scheme().background),
-				fg_color = wezterm.color.parse(get_updated_scheme().foreground),
-			},
-			new_tab_hover = {
-				fg_color = wezterm.color.parse(get_updated_scheme().foreground),
-				bg_color = wezterm.color.parse(get_updated_scheme().tab_bar.new_tab.bg_color),
-			},
-		},
-	},
+	colors = get_scheme(),
 
 	-- Tab bar -------------------------
 	tab_max_width = 42,

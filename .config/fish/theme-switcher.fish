@@ -1,9 +1,9 @@
 #!/usr/bin/env fish
 
-set THEME_LIGHT "ayu Light"
-set THEME_DARK "ayu Dark"
-set THEME_BAT_LIGHT Catppuccin-latte
-set THEME_BAT_DARK Catppuccin-frappe
+set THEME_LIGHT "Rosé Pine Dawn"
+set THEME_DARK "Rosé Pine"
+set THEME_BAT_LIGHT gruvbox-light
+set THEME_BAT_DARK gruvbox-dark
 
 set BATCONF $HOME/.config/bat/config
 set GITCONF $HOME/.gitconfig

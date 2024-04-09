@@ -61,6 +61,7 @@ if not set -q fish_initialized
     abbr -a ch cht.sh
     abbr -a y yarn
     abbr -a p pnpm
+    abbr -a k kubectl
 
     ## git
     abbr -a g git
