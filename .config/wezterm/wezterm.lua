@@ -164,8 +164,18 @@ return {
 	warn_about_missing_glyphs = false,
 
 	-- Keys -------------------------
-	leader = { key = "b", mods = "CTRL", timeout_milliseconds = 2500 },
+	-- leader = { key = "b", mods = "CTRL", timeout_milliseconds = 2500 },
 	keys = {
+		{
+			key = "m",
+			mods = "CTRL",
+			action = wezterm.action({ SendString = "\x1b[5;30012~" }),
+		},
+		{
+			key = "i",
+			mods = "CTRL",
+			action = wezterm.action({ SendString = "\x1b[5;30013~" }),
+		},
 		{
 			key = "-",
 			mods = "LEADER",
@@ -257,11 +267,11 @@ return {
 			action = wezterm.action.ActivateTabRelative(-1),
 		},
 		-- Send "CTRL-B" to the terminal when pressing CTRL-B, CTRL-B
-		{
-			key = "b",
-			mods = "LEADER|CTRL",
-			action = wezterm.action.SendKey({ key = "b", mods = "CTRL" }),
-		},
+		-- {
+		-- 	key = "b",
+		-- 	mods = "LEADER|CTRL",
+		-- 	action = wezterm.action.SendKey({ key = "b", mods = "CTRL" }),
+		-- },
 		-- Switch panes
 		{
 			key = "M",
