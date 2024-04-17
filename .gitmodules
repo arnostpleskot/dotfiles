@@ -1,9 +1,0 @@
-[submodule ".config/ranger/plugins/devicons2"]
-	path = .config/ranger/plugins/devicons2
-	url = git@github.com:cdump/ranger-devicons2.git
-[submodule "Applications/dmenu"]
-	path = Applications/dmenu
-	url = git@github.com:arnostpleskot/dmenu.git
-[submodule "Applications/dwm"]
-	path = Applications/dwm
-	url = git@github.com:arnostpleskot/dwm.git
