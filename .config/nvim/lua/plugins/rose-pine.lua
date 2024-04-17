@@ -1,4 +1,4 @@
 return {
-  { "rose-pine/neovim", lazy = true, name = "rose-pine" },
+  { "rose-pine/neovim", priority = 1000, name = "rose-pine" },
   { "LazyVim/LazyVim", opts = { colorscheme = "rose-pine" } },
 }
