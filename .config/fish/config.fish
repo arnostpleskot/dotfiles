@@ -1,10 +1,10 @@
 # asdf
 source ~/.asdf/asdf.fish
 
-# if status is-interactive
-#     and not set -q TMUX
-#     exec tmux
-# end
+if status is-interactive
+    and not set -q TMUX
+    exec tmux
+end
 
 set -g -x EDITOR nvim
 set -x GPG_TTY (tty)
