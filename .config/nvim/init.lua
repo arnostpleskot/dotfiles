@@ -232,6 +232,14 @@ vim.keymap.set('n', 'h', 'n', { desc = 'Find next' })
 vim.keymap.set('n', '<C-l>', '<C-u>zz', { desc = 'Move half page up' })
 vim.keymap.set('n', '<C-h>', '<C-d>zz', { desc = 'Move half page down' })
 
+-- windows
+vim.keymap.set('n', '<leader>ww', '<C-W>p', { desc = 'Other Window', remap = true })
+vim.keymap.set('n', '<leader>wd', '<C-W>c', { desc = 'Delete Window', remap = true })
+vim.keymap.set('n', '<leader>w-', '<C-W>s', { desc = 'Split Window Below', remap = true })
+vim.keymap.set('n', '<leader>w|', '<C-W>v', { desc = 'Split Window Right', remap = true })
+vim.keymap.set('n', '<leader>-', '<C-W>s', { desc = 'Split Window Below', remap = true })
+vim.keymap.set('n', '<leader>|', '<C-W>v', { desc = 'Split Window Right', remap = true })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -306,6 +314,8 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
+  { 'tpope/vim-obsession' },
+
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -318,7 +328,7 @@ require('lazy').setup({
         ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>w'] = { name = '[W]indow', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -353,6 +363,7 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-telescope/telescope-frecency.nvim' },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -390,14 +401,23 @@ require('lazy').setup({
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          ['frecency'] = {
+            hide_current_buffer = true,
+            ignore_patterns = { '*.git/*', '*/tmp/*', 'term://*', 'oil://*', '*/Starter', 'diffview://*', '/tmp/*' },
+            default_workspace = 'CWD',
+            db_safe_mode = false,
+            show_unindexed = true,
+          },
         },
       }
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'frecency')
 
       -- See `:help telescope.builtin`
+      local telescope = require 'telescope'
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -407,8 +427,11 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader><leader>', builtin.oldfiles, { desc = '[ ] Search Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch existing [B]uffers' })
+      vim.keymap.set('n', '<leader>s.', function()
+        telescope.extensions.frecency.frecency {}
+      end, { desc = '[S]earch Recent files (by frecency)' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -508,19 +531,19 @@ require('lazy').setup({
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
           --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+          map('<leader>cD', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>cds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>cws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>cr', vim.lsp.buf.rename, '[R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -550,6 +573,9 @@ require('lazy').setup({
               buffer = event.buf,
               callback = vim.lsp.buf.clear_references,
             })
+
+            -- Start vim-obsession on Nvim start
+            vim.api.nvim_create_autocmd('VimEnter', { command = 'Obsess' })
           end
         end,
       })
@@ -668,6 +694,7 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -873,15 +900,13 @@ require('lazy').setup({
       vim.g.tmux_navigator_no_mappings = 1
 
       -- Map Control + M to navigate left
-      vim.api.nvim_set_keymap('n', '<C-m>', ':<C-U>TmuxNavigateLeft<CR>', { silent = true, noremap = true })
+      vim.api.nvim_set_keymap('n', '<M-T-S-D-PageUp>', ':<C-U>TmuxNavigateLeft<CR>', { silent = true, noremap = true })
       -- Map Control + N to navigate down
       vim.api.nvim_set_keymap('n', '<C-n>', ':<C-U>TmuxNavigateDown<CR>', { silent = true, noremap = true })
       -- Map Control + E to navigate up
       vim.api.nvim_set_keymap('n', '<C-e>', ':<C-U>TmuxNavigateUp<CR>', { silent = true, noremap = true })
       -- Map Control + I to navigate right
-      vim.api.nvim_set_keymap('n', '<C-i>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true })
-      -- Map Control + \ to navigate to the previous window
-      vim.api.nvim_set_keymap('n', '<C-\\>', ':<C-U>TmuxNavigatePrevious<CR>', { silent = true, noremap = true })
+      vim.api.nvim_set_keymap('n', '<T-C-D-PageUp>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true })
     end,
   },
 
@@ -894,9 +919,15 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     lazy = true,
     init = function()
-      require('oil').setup()
+      require('oil').setup {
+        float = {
+          max_width = 80,
+          max_height = 20,
+        },
+        skip_confirm_for_simple_edits = true,
+      }
 
-      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+      vim.keymap.set('n', '-', ':Oil --float<CR>', { desc = 'Open parent directory', silent = true })
     end,
   },
 
@@ -949,6 +980,10 @@ require('lazy').setup({
       require('mini.pairs').setup()
 
       require('mini.starter').setup()
+
+      require('mini.starter').setup {
+        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789.',
+      }
 
       require('mini.diff').setup {
         view = {
