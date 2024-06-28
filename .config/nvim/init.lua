@@ -298,6 +298,15 @@ require('lazy').setup({
   --    require('gitsigns').setup({ ... })
   --
   -- See `:help gitsigns` to understand what the configuration keys do
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      current_line_blame = true,
+      current_line_blame_formatter_opts = {
+        relative_time = true,
+      },
+    },
+  },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -329,6 +338,7 @@ require('lazy').setup({
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]indow', _ = 'which_key_ignore' },
+        ['<leader>m'] = { name = '[M]y Eyes Hurt', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -360,6 +370,8 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
+      { 'danielfalk/smart-open.nvim' },
+      { 'kkharji/sqlite.lua' }, -- dependency for `danielfalk/smart-open.nvim`
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
@@ -396,7 +408,13 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+
+        pickers = {
+          builtin = {
+            theme = 'dropdown',
+          },
+        },
+
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -408,6 +426,12 @@ require('lazy').setup({
             db_safe_mode = false,
             show_unindexed = true,
           },
+          ['smart_open'] = {
+            match_algorithm = 'fzf',
+            open_buffer_indicators = { previous = '•', others = '∘' },
+            show_scores = false,
+            disable_devicons = not vim.g.have_nerd_font,
+          },
         },
       }
 
@@ -415,6 +439,7 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension, 'frecency')
+      pcall(require('telescope').load_extension, 'smart_open')
 
       -- See `:help telescope.builtin`
       local telescope = require 'telescope'
@@ -427,11 +452,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader><leader>', builtin.oldfiles, { desc = '[ ] Search Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch existing [B]uffers' })
-      vim.keymap.set('n', '<leader>s.', function()
+      vim.keymap.set('n', '<leader>sF', function()
         telescope.extensions.frecency.frecency {}
       end, { desc = '[S]earch Recent files (by frecency)' })
+      vim.keymap.set('n', '<leader>.', function()
+        builtin.oldfiles { cwd_only = true }
+      end, { desc = 'Search Recent Files ("[.]" for repeat)' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -455,6 +482,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      vim.keymap.set('n', '<leader><leader>', function()
+        require('telescope').extensions.smart_open.smart_open {
+          cwd_only = true,
+          filename_first = false,
+        }
+      end, { desc = 'Smart Open' })
     end,
   },
 
@@ -465,6 +499,8 @@ require('lazy').setup({
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+
+      'SmiteshP/nvim-navic',
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -577,6 +613,11 @@ require('lazy').setup({
             -- Start vim-obsession on Nvim start
             vim.api.nvim_create_autocmd('VimEnter', { command = 'Obsess' })
           end
+
+          -- Attach nvim-navic
+          if client and client.supports_method 'textDocument/documentSymbol' then
+            require('nvim-navic').attach(client, event.buf)
+          end
         end,
       })
 
@@ -607,8 +648,14 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
+        tsserver = {},
+        eslint = {
+          settings = {
+            -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+            workingDirectories = { mode = 'auto' },
+          },
+        },
+        jsonls = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -693,8 +740,11 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier' } },
+        javascript = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
+        javascriptreact = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
+        typescript = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
+        typescriptreact = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
+        json = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -833,17 +883,17 @@ require('lazy').setup({
   },
 
   {
-    'pmizio/typescript-tools.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
-  },
-
-  {
     'rose-pine/neovim',
     name = 'rose-pine',
     priority = 1000,
     init = function()
-      require('rose-pine').setup {}
+      require('rose-pine').setup {
+        styles = {
+          bold = true,
+          italic = true,
+          transparency = true,
+        },
+      }
 
       vim.cmd.colorscheme 'rose-pine'
     end,
@@ -854,6 +904,7 @@ require('lazy').setup({
   {
     'f-person/auto-dark-mode.nvim',
     priority = 10000,
+    enabled = false,
     opts = {
       update_interval = 1000,
       set_dark_mode = function()
@@ -862,6 +913,44 @@ require('lazy').setup({
       set_light_mode = function()
         vim.api.nvim_set_option('background', 'light')
       end,
+    },
+  },
+
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbol[s] (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP: Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = '[L]ocation List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = '[Q]uickfix List (Trouble)',
+      },
     },
   },
 
@@ -884,6 +973,22 @@ require('lazy').setup({
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
+  },
+
+  {
+    'SmiteshP/nvim-navic',
+    lazy = true,
+    opts = function()
+      return {
+        separator = ' ',
+        highlight = true,
+        depth_limit = 5,
+        lazy_update_context = true,
+      }
+    end,
+    init = function()
+      vim.g.navic_silence = true
+    end,
   },
 
   {
@@ -910,13 +1015,11 @@ require('lazy').setup({
     end,
   },
 
-  { 'nvim-tree/nvim-web-devicons', optional = false },
-
   {
     'stevearc/oil.nvim',
     opts = {},
     -- Optional dependencies
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     lazy = true,
     init = function()
       require('oil').setup {
@@ -925,10 +1028,38 @@ require('lazy').setup({
           max_height = 20,
         },
         skip_confirm_for_simple_edits = true,
+        keymaps = {
+          ['<Esc>'] = 'actions.close',
+          ['q'] = 'actions.close',
+        },
       }
 
       vim.keymap.set('n', '-', ':Oil --float<CR>', { desc = 'Open parent directory', silent = true })
     end,
+  },
+
+  {
+    'wildfunctions/myeyeshurt',
+    lazy = false,
+    opts = {},
+    keys = {
+      {
+        '<leader>ms',
+        mode = 'n',
+        function()
+          require('myeyeshurt').start()
+        end,
+        desc = '[S]tart snowing',
+      },
+      {
+        '<leader>mx',
+        mode = 'n',
+        function()
+          require('myeyeshurt').stop()
+        end,
+        desc = 'Stop snowing',
+      },
+    },
   },
 
   { -- Collection of arious small independent plugins/modules
@@ -985,16 +1116,6 @@ require('lazy').setup({
         query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789.',
       }
 
-      require('mini.diff').setup {
-        view = {
-          -- Visualization style. Possible values are 'sign' and 'number'.
-          style = 'sign',
-
-          -- Signs used for hunks with 'sign' view
-          signs = { add = '▎', change = '▎', delete = '' },
-        },
-      }
-
       require('mini.indentscope').setup {
         symbol = '│',
       }
@@ -1023,7 +1144,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {

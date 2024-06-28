@@ -6,10 +6,11 @@ local theme_light = require("lua/rose-pine-dawn")
 -- wezterm.gui is not available to the mux server, so take care to
 -- do something reasonable when this config is evaluated by the mux
 local function get_appearance()
-	if wezterm.gui then
-		return wezterm.gui.get_appearance()
-	end
 	return "Dark"
+	-- if wezterm.gui then
+	-- 	return wezterm.gui.get_appearance()
+	-- end
+	-- return "Dark"
 end
 
 local function get_scheme()
@@ -21,8 +22,10 @@ local function get_scheme()
 end
 
 return {
-	scrollback_lines = 28000,
-	pane_focus_follows_mouse = true,
+	-- window_background_opacity = 0.8,
+	-- GPU acceleration -------------
+	front_end = "WebGpu",
+	webgpu_power_preference = "HighPerformance",
 	-- Hypelinks --------------------
 	hyperlink_rules = {
 		-- Matches: a URL in parens: (URL)

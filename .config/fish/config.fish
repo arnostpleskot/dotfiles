@@ -27,7 +27,7 @@ set -g FZF_DEFAULT_OPTS "$FZF_PREVIEW_OPTS"
 
 # ALIASES
 alias ls='exa -lah --icons'
-alias cat='bat'
+# alias cat='bat'
 # alias ranger='lf'
 alias f="fzf "$FZF_PREVIEW_OPTS""
 alias suspend="systemctl suspend"
