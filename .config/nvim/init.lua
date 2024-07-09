@@ -302,8 +302,8 @@ require('lazy').setup({
     'lewis6991/gitsigns.nvim',
     opts = {
       current_line_blame = true,
-      current_line_blame_formatter_opts = {
-        relative_time = true,
+      current_line_blame_opts = {
+        virt_text_pos = 'right_align',
       },
     },
   },
@@ -883,19 +883,14 @@ require('lazy').setup({
   },
 
   {
-    'rose-pine/neovim',
-    name = 'rose-pine',
+    'sainnhe/gruvbox-material',
+    lazy = false,
     priority = 1000,
-    init = function()
-      require('rose-pine').setup {
-        styles = {
-          bold = true,
-          italic = true,
-          transparency = true,
-        },
-      }
-
-      vim.cmd.colorscheme 'rose-pine'
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.gruvbox_material_enable_italic = true
+      vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 
