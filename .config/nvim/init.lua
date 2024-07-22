@@ -155,6 +155,8 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- NOTE: this is handled by cyberdream.nvim
+--
 -- vim.opt.fillchars = {
 --   foldopen = '',
 --   foldclose = '',
@@ -613,6 +615,25 @@ require('lazy').setup({
           if client and client.supports_method 'textDocument/documentSymbol' then
             require('nvim-navic').attach(client, event.buf)
           end
+
+          -- Add border around lsp floating windows
+          local _border = 'single'
+
+          vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+            border = _border,
+          })
+
+          vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+            border = _border,
+          })
+
+          vim.diagnostic.config {
+            float = { border = _border },
+          }
+
+          require('lspconfig.ui.windows').default_opts {
+            border = _border,
+          }
         end,
       })
 
@@ -817,6 +838,12 @@ require('lazy').setup({
 
             return kind
           end,
+        },
+
+        -- Border for completion windows
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
         },
 
         -- For an understanding of why these mappings were
