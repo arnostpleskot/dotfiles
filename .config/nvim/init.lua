@@ -1,4 +1,5 @@
 --[[
+--
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -154,14 +155,14 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
-vim.opt.fillchars = {
-  foldopen = '',
-  foldclose = '',
-  fold = ' ',
-  foldsep = ' ',
-  diff = '╱',
-  eob = ' ',
-}
+-- vim.opt.fillchars = {
+--   foldopen = '',
+--   foldclose = '',
+--   fold = ' ',
+--   foldsep = ' ',
+--   diff = '╱',
+--   eob = ' ',
+-- }
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -329,16 +330,22 @@ require('lazy').setup({
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
+      local wk = require 'which-key'
+      wk.setup {
+        icons = {
+          mappings = false,
+        },
+      }
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]indow', _ = 'which_key_ignore' },
-        ['<leader>m'] = { name = '[M]y Eyes Hurt', _ = 'which_key_ignore' },
+      wk.add {
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>w', group = '[W]indow' },
+        { '<leader>m', group = '[M]y Eyes Hurt' },
+        { '<leader>t', group = '[T]rouble' },
       }
     end,
   },
@@ -375,7 +382,6 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
-      { 'nvim-telescope/telescope-frecency.nvim' },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -419,13 +425,6 @@ require('lazy').setup({
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
-          ['frecency'] = {
-            hide_current_buffer = true,
-            ignore_patterns = { '*.git/*', '*/tmp/*', 'term://*', 'oil://*', '*/Starter', 'diffview://*', '/tmp/*' },
-            default_workspace = 'CWD',
-            db_safe_mode = false,
-            show_unindexed = true,
-          },
           ['smart_open'] = {
             match_algorithm = 'fzf',
             open_buffer_indicators = { previous = '•', others = '∘' },
@@ -438,7 +437,6 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
-      pcall(require('telescope').load_extension, 'frecency')
       pcall(require('telescope').load_extension, 'smart_open')
 
       -- See `:help telescope.builtin`
@@ -453,30 +451,27 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch existing [B]uffers' })
-      vim.keymap.set('n', '<leader>sF', function()
-        telescope.extensions.frecency.frecency {}
-      end, { desc = '[S]earch Recent files (by frecency)' })
       vim.keymap.set('n', '<leader>.', function()
         builtin.oldfiles { cwd_only = true }
       end, { desc = 'Search Recent Files ("[.]" for repeat)' })
 
       -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
+      vim.keymap.set('n', '<leader>s/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, { desc = '[S]earch [/] fuzzily in current buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
+      vim.keymap.set('n', '<leader>/', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
-      end, { desc = '[S]earch [/] in Open Files' })
+      end, { desc = '[/] Fuzzily search in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
@@ -803,13 +798,13 @@ require('lazy').setup({
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
-        window = {
-          completion = {
-            winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
-            col_offset = -3,
-            side_padding = 0,
-          },
-        },
+        -- window = {
+        --   completion = {
+        --     winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
+        --     col_offset = -3,
+        --     side_padding = 0,
+        --   },
+        -- },
 
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
@@ -883,33 +878,36 @@ require('lazy').setup({
   },
 
   {
-    'sainnhe/gruvbox-material',
+    'scottmckendry/cyberdream.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
-      vim.g.gruvbox_material_enable_italic = true
-      vim.cmd.colorscheme 'gruvbox-material'
+      require('cyberdream').setup {
+        transparent = true,
+        hide_fillchars = true,
+        borderless_telescope = false,
+      }
+
+      vim.cmd 'colorscheme cyberdream'
     end,
   },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  {
-    'f-person/auto-dark-mode.nvim',
-    priority = 10000,
-    enabled = false,
-    opts = {
-      update_interval = 1000,
-      set_dark_mode = function()
-        vim.api.nvim_set_option('background', 'dark')
-      end,
-      set_light_mode = function()
-        vim.api.nvim_set_option('background', 'light')
-      end,
-    },
-  },
+  -- {
+  --   'f-person/auto-dark-mode.nvim',
+  --   priority = 10000,
+  --   enabled = false,
+  --   opts = {
+  --     update_interval = 1000,
+  --     set_dark_mode = function()
+  --       vim.api.nvim_set_option('background', 'dark')
+  --     end,
+  --     set_light_mode = function()
+  --       vim.api.nvim_set_option('background', 'light')
+  --     end,
+  --   },
+  -- },
 
   {
     'folke/trouble.nvim',
@@ -917,12 +915,12 @@ require('lazy').setup({
     cmd = 'Trouble',
     keys = {
       {
-        '<leader>xx',
+        '<leader>tx',
         '<cmd>Trouble diagnostics toggle<cr>',
         desc = 'Diagnostics (Trouble)',
       },
       {
-        '<leader>xX',
+        '<leader>tX',
         '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
         desc = 'Buffer Diagnostics (Trouble)',
       },
@@ -937,12 +935,12 @@ require('lazy').setup({
         desc = 'LSP: Definitions / references / ... (Trouble)',
       },
       {
-        '<leader>xL',
+        '<leader>tL',
         '<cmd>Trouble loclist toggle<cr>',
         desc = '[L]ocation List (Trouble)',
       },
       {
-        '<leader>xQ',
+        '<leader>tQ',
         '<cmd>Trouble qflist toggle<cr>',
         desc = '[Q]uickfix List (Trouble)',
       },
@@ -1012,7 +1010,6 @@ require('lazy').setup({
 
   {
     'stevearc/oil.nvim',
-    opts = {},
     -- Optional dependencies
     dependencies = { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     lazy = true,
@@ -1040,7 +1037,6 @@ require('lazy').setup({
     keys = {
       {
         '<leader>ms',
-        mode = 'n',
         function()
           require('myeyeshurt').start()
         end,
@@ -1048,11 +1044,10 @@ require('lazy').setup({
       },
       {
         '<leader>mx',
-        mode = 'n',
         function()
           require('myeyeshurt').stop()
         end,
-        desc = 'Stop snowing',
+        desc = 'E[x]it snowing',
       },
     },
   },

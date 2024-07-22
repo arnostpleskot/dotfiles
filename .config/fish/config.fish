@@ -1,17 +1,7 @@
 # asdf
 source ~/.asdf/asdf.fish
 
-if status is-interactive
-    and not set -q TMUX
-    exec tmux
-end
-
 set -g -x EDITOR nvim
-set -x GPG_TTY (tty)
-set -g ANDROID_HOME $HOME/Android/Sdk
-
-# PATH
-set -x PATH $PATH $HOME/bin
 
 # FZF
 
@@ -27,7 +17,7 @@ set -g FZF_DEFAULT_OPTS "$FZF_PREVIEW_OPTS"
 
 # ALIASES
 alias ls='exa -lah --icons'
-# alias cat='bat'
+alias cat='bat'
 # alias ranger='lf'
 alias f="fzf "$FZF_PREVIEW_OPTS""
 alias suspend="systemctl suspend"
@@ -80,12 +70,6 @@ if not set -q fish_initialized
 
 end
 
-function cht.sh
-    curl cheat.sh/$argv
-end
-
-complete -c cht.sh -xa '(curl -s cheat.sh/:list)'
-
 function fish_greeting
     echo (~/.config/fish/daily-fact.fish --no-intro) | cowsay -f dragon-and-cow | lolcat
 end
@@ -102,8 +86,6 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-# dotnet via asdf
-source ~/.asdf/plugins/dotnet/set-dotnet-env.fish
+# Zoxide
+zoxide init fish | source
 
-# opam configuration
-source /home/arnost/.opam/opam-init/init.fish >/dev/null 2>/dev/null; or true

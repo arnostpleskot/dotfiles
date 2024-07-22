@@ -5,3 +5,7 @@ lazygit 0.42.0
 pnpm 9.5.0
 exa 0.10.1
 bat 0.24.0
+neovim 0.10.0
+nodejs 20.15.1
+ripgrep 14.1.0
+zellij 0.40.1
