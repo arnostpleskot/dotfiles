@@ -1,15 +1,15 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](color_yellow)\
+[](fg:color_yellow)\
 $os\
 $username\
-[](bg:color_orange fg:color_yellow)\
+[](fg:color_yellow bg:color_blue)\
 $directory\
-[](fg:color_orange bg:color_green)\
+[](fg:color_blue bg:color_cyan)\
 $git_branch\
 $git_status\
-[](fg:color_green bg:color_cyan)\
+[](fg:color_cyan bg:color_magenta)\
 $c\
 $rust\
 $golang\
@@ -20,10 +20,10 @@ $kotlin\
 $haskell\
 $python\
 $elixir\
-[](fg:color_cyan bg:color_blue)\
+[](fg:color_magenta bg:color_purple)\
 $docker_context\
 $conda\
-[](fg:color_blue bg:color_bg3)\
+[](fg:color_purple bg:color_bg3)\
 $time\
 [ ](fg:color_bg3)\
 $line_break$character"""
@@ -77,7 +77,7 @@ style_root = "bg:color_yellow fg:color_bg0"
 format = '[ $user ]($style)'
 
 [directory]
-style = "fg:color_bg0 bg:color_orange"
+style = "fg:color_bg0 bg:color_blue"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -92,70 +92,70 @@ truncation_symbol = "…/"
 [git_branch]
 symbol = ""
 style = "bg:color_green"
-format = '[[ $symbol $branch ](fg:color_bg0 bg:color_green)]($style)'
+format = '[[ $symbol $branch ](fg:color_bg0 bg:color_cyan)]($style)'
 
 [git_status]
 style = "bg:color_green"
-format = '[[($all_status$ahead_behind )](fg:color_bg0 bg:color_green)]($style)'
+format = '[[($all_status$ahead_behind )](fg:color_bg0 bg:color_cyan)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [c]
 symbol = " "
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [php]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [java]
 symbol = " "
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [kotlin]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [haskell]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [python]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [elixir]
 symbol = " "
-style = "bg:color_cyan"
-format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_cyan)]($style)'
+style = "bg:color_magenta"
+format = '[[ $symbol( $version) ](fg:color_bg0 bg:color_magenta)]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:color_cyan"
-format = '[[ $symbol( $context) ](fg:color_bg3 bg:color_blue)]($style)'
+style = "bg:color_purple"
+format = '[[ $symbol( $context) ](fg:color_bg0 bg:color_purple)]($style)'
 
 [conda]
-style = "bg:color_cyan"
-format = '[[ $symbol( $environment) ](fg:color_bg3 bg:color_blue)]($style)'
+style = "bg:color_purple"
+format = '[[ $symbol( $environment) ](fg:color_bg0 bg:color_purple)]($style)'
 
 [time]
 disabled = false
