@@ -1,0 +1,113 @@
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "output": [
+        "DP-1"
+    ],
+    // Choose the order of the modules
+    "modules-left": [
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "privacy",
+        "clock#date",
+        "clock#time",
+        "custom/notification"
+    ],
+    "modules-right": [
+        "tray",
+        "pulseaudio",
+        "custom/power"
+    ],
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "sort-by-name": true,
+        "format": " {icon} ",
+        "format-icons": {
+            "default": ""
+        }
+    },
+    "tray": {
+        "icon-size": 21,
+        "spacing": 10
+    },
+    "custom/music": {
+        "format": "   {}",
+        "escape": true,
+        "interval": 5,
+        "tooltip": false,
+        "exec": "playerctl metadata --format='{{ title }}'",
+        "on-click": "playerctl play-pause",
+        "max-length": 50
+    },
+    "clock#time": {
+        "timezone": "Europe/Prague",
+        "format": "󰥔  {:%H:%M}"
+    },
+    "clock#date": {
+        "timezone": "Europe/Prague",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format": "  {:%d. %m. %Y}"
+    },
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 21,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            }
+        ]
+    },
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{icon}  {volume}%",
+        "format-muted": " ",
+        "format-icons": {
+            "default": [
+                " ",
+                " ",
+                "  "
+            ]
+        },
+        "on-click": "flatpak run com.saivert.pwvucontrol"
+    },
+    "custom/power": {
+        "tooltip": false,
+        "on-click": "wlogout &",
+        "on-click-right": "hyprlock &",
+        "format": "⏻ "
+    },
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    }
+}
