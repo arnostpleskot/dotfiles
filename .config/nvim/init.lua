@@ -326,8 +326,6 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { 'tpope/vim-obsession' },
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -379,8 +377,9 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
+      { 'nvim-telescope/telescope-smart-history.nvim' },
       { 'danielfalk/smart-open.nvim' },
-      { 'kkharji/sqlite.lua' }, -- dependency for `danielfalk/smart-open.nvim`
+      { 'kkharji/sqlite.lua' }, -- dependency for `danielfalk/smart-open.nvim` and `nvim-telescope/telescope-smart-history.nvim`
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
@@ -417,6 +416,13 @@ require('lazy').setup({
         --   },
         -- },
 
+        defaults = {
+          history = {
+            path = '~/.local/share/nvim/databases/',
+            limit = 100,
+          },
+        },
+
         pickers = {
           builtin = {
             theme = 'dropdown',
@@ -440,9 +446,9 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension, 'smart_open')
+      pcall(require('telescope').load_extension, 'smart_history')
 
       -- See `:help telescope.builtin`
-      local telescope = require 'telescope'
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -452,6 +458,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>sp', builtin.pickers, { desc = '[S]earch [P]ickers' })
       vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch existing [B]uffers' })
       vim.keymap.set('n', '<leader>.', function()
         builtin.oldfiles { cwd_only = true }
@@ -470,10 +477,10 @@ require('lazy').setup({
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>/', function()
         builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
+          grep_open_files = false,
+          prompt_title = 'Live Grep in CWD',
         }
-      end, { desc = '[/] Fuzzily search in Open Files' })
+      end, { desc = '[/] Fuzzily search in CWD' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
@@ -496,8 +503,6 @@ require('lazy').setup({
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-
-      'SmiteshP/nvim-navic',
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -606,14 +611,6 @@ require('lazy').setup({
               buffer = event.buf,
               callback = vim.lsp.buf.clear_references,
             })
-
-            -- Start vim-obsession on Nvim start
-            vim.api.nvim_create_autocmd('VimEnter', { command = 'Obsess' })
-          end
-
-          -- Attach nvim-navic
-          if client and client.supports_method 'textDocument/documentSymbol' then
-            require('nvim-navic').attach(client, event.buf)
           end
 
           -- Add border around lsp floating windows
@@ -663,8 +660,8 @@ require('lazy').setup({
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        -- But for many setups, the LSP (`ts_ls` - formerly `tsserver`) will work just fine
+        ts_ls = {},
         eslint = {
           settings = {
             -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
@@ -686,6 +683,10 @@ require('lazy').setup({
               -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
+        },
+
+        ltex = {
+          language = 'en-GB',
         },
       }
 
@@ -715,7 +716,7 @@ require('lazy').setup({
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for tsserver)
+            -- certain features of an LSP (for example, turning off formatting for ts_ls/tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
@@ -731,7 +732,7 @@ require('lazy').setup({
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_fallback = true }
+          require('conform').format { async = true, lsp_fallback = true, stop_after_first = true }
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -745,22 +746,21 @@ require('lazy').setup({
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         return {
-          timeout_ms = 500,
+          timeout_ms = 1000,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          stop_after_first = false,
         }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
-        javascriptreact = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
-        typescript = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
-        typescriptreact = { { 'prettierd', 'eslint_d', 'prettier', 'eslint' } },
-        json = { { 'prettierd', 'prettier' } },
+
+        javascript = { 'eslint_d', 'prettierd' },
+        javascriptreact = { 'eslint_d', 'prettierd' },
+        typescript = { 'eslint_d', 'prettierd' },
+        typescriptreact = { 'eslint_d', 'prettierd' },
+        json = { 'prettierd' },
       },
     },
   },
@@ -802,6 +802,7 @@ require('lazy').setup({
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-emoji',
+      'hrsh7th/cmp-cmdline',
       'davidsierradz/cmp-conventionalcommits',
       'onsails/lspkind.nvim',
     },
@@ -810,6 +811,29 @@ require('lazy').setup({
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
+
+      -- `/` cmdline setup.
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' },
+        },
+      })
+
+      -- `:` cmdline setup.
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' },
+        }, {
+          {
+            name = 'cmdline',
+            option = {
+              ignore_cmds = { 'Man', '!' },
+            },
+          },
+        }),
+      })
 
       cmp.setup {
         snippet = {
@@ -913,13 +937,23 @@ require('lazy').setup({
         transparent = true,
         hide_fillchars = true,
         borderless_telescope = false,
+        theme = {
+          highlights = {
+            GitSignsCurrentLineBlame = { fg = '#7b8496' },
+          },
+        },
       }
 
       vim.cmd 'colorscheme cyberdream'
     end,
   },
 
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   -- {
   --   'f-person/auto-dark-mode.nvim',
@@ -962,12 +996,12 @@ require('lazy').setup({
         desc = 'LSP: Definitions / references / ... (Trouble)',
       },
       {
-        '<leader>tL',
+        '<leader>tl',
         '<cmd>Trouble loclist toggle<cr>',
         desc = '[L]ocation List (Trouble)',
       },
       {
-        '<leader>tQ',
+        '<leader>tq',
         '<cmd>Trouble qflist toggle<cr>',
         desc = '[Q]uickfix List (Trouble)',
       },
@@ -993,22 +1027,6 @@ require('lazy').setup({
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
-  },
-
-  {
-    'SmiteshP/nvim-navic',
-    lazy = true,
-    opts = function()
-      return {
-        separator = ' ',
-        highlight = true,
-        depth_limit = 5,
-        lazy_update_context = true,
-      }
-    end,
-    init = function()
-      vim.g.navic_silence = true
-    end,
   },
 
   {
@@ -1046,10 +1064,22 @@ require('lazy').setup({
           max_width = 80,
           max_height = 20,
         },
+        default_file_explorer = true,
+        delete_to_trash = true,
         skip_confirm_for_simple_edits = true,
         keymaps = {
           ['<Esc>'] = 'actions.close',
           ['q'] = 'actions.close',
+        },
+        view_options = {
+          show_hidden = true,
+          natural_order = true,
+          is_always_hidden = function(name, _)
+            return name == '..' or name == '.git'
+          end,
+        },
+        win_options = {
+          wrap = true,
         },
       }
 
@@ -1058,26 +1088,42 @@ require('lazy').setup({
   },
 
   {
-    'wildfunctions/myeyeshurt',
-    lazy = false,
-    opts = {},
-    keys = {
-      {
-        '<leader>ms',
-        function()
-          require('myeyeshurt').start()
-        end,
-        desc = '[S]tart snowing',
-      },
-      {
-        '<leader>mx',
-        function()
-          require('myeyeshurt').stop()
-        end,
-        desc = 'E[x]it snowing',
+    'epwalsh/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
+    -- lazy = true,
+    -- ft = 'markdown',
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    -- refer to `:h file-pattern` for more examples
+    --   'BufReadPre " .. vim.fn.expand "~" .. "/Documents/Obsidian/notes/*.md',
+    --   'BufNewFile " .. vim.fn.expand "~" .. "/Documents/Obsidian/notes/*.md',
+    -- },
+    dependencies = {
+      -- Required.
+      'nvim-lua/plenary.nvim',
+    },
+    opts = {
+      workspaces = {
+        {
+          name = 'notes',
+          path = '~/Documents/Obsidian/notes',
+        },
       },
     },
   },
+
+  -- {
+  --   'olimorris/codecompanion.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
+  --     'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
+  --   },
+  --   config = true,
+  -- },
 
   { -- Collection of arious small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1127,11 +1173,9 @@ require('lazy').setup({
 
       require('mini.pairs').setup()
 
-      require('mini.starter').setup()
-
-      require('mini.starter').setup {
-        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789.',
-      }
+      -- require('mini.starter').setup {
+      --   query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789.',
+      -- }
 
       require('mini.indentscope').setup {
         symbol = '│',
@@ -1157,6 +1201,7 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -1185,8 +1230,60 @@ require('lazy').setup({
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+
+      vim.filetype.add {
+        pattern = {
+          ['.*/hypr/.*%.conf'] = 'hyprlang',
+          ['**.rasi'] = 'rasi',
+        },
+      }
     end,
   },
+
+  {
+    'utilyre/barbecue.nvim',
+    name = 'barbecue',
+    version = '*',
+    dependencies = {
+      'SmiteshP/nvim-navic',
+      'nvim-tree/nvim-web-devicons', -- optional dependency
+    },
+    opts = {
+      -- configurations go here
+    },
+  },
+
+  {
+    'chrishrb/gx.nvim',
+    keys = { { 'gx', '<cmd>Browse<cr>', mode = { 'n', 'x' } } },
+    cmd = { 'Browse' },
+    init = function()
+      vim.g.netrw_nogx = 1 -- disable netrw gx
+    end,
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('gx').setup {
+        handler_options = {
+          search_engine = 'https://duckduckgo.com?q=',
+        },
+      }
+    end,
+    submodules = false, -- not needed, submodules are required only for test
+  },
+
+  {
+    'nvim-pack/nvim-spectre',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    },
+    config = function()
+      vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
+        desc = 'Toggle Spectre',
+      })
+    end,
+  },
+
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
