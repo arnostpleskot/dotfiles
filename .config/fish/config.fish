@@ -86,6 +86,4 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-# Zoxide
-zoxide init fish | source
-
+source /home/arnost/.config/op/plugins.sh
