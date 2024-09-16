@@ -9,12 +9,12 @@
         "hyprland/workspaces"
     ],
     "modules-center": [
-        "privacy",
-        "clock#date",
         "clock#time",
+        "clock#date",
         "custom/notification"
     ],
     "modules-right": [
+        "privacy",
         "tray",
         "pulseaudio",
         "custom/power"
@@ -22,10 +22,11 @@
     "hyprland/workspaces": {
         "disable-scroll": true,
         "sort-by-name": true,
-        "format": " {icon} ",
-        "format-icons": {
-            "default": ""
-        }
+        // "format": " {icon} ",
+        // "format-icons": {
+        //     "default": ""
+        // }
+        "show-special": true
     },
     "tray": {
         "icon-size": 21,
@@ -42,6 +43,7 @@
     },
     "clock#time": {
         "timezone": "Europe/Prague",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format": "󰥔  {:%H:%M}"
     },
     "clock#date": {
@@ -59,11 +61,11 @@
                 "tooltip": true,
                 "tooltip-icon-size": 24
             },
-            {
-                "type": "audio-out",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
+            // {
+            //     "type": "audio-out",
+            //     "tooltip": true,
+            //     "tooltip-icon-size": 24
+            // },
             {
                 "type": "audio-in",
                 "tooltip": true,
@@ -94,13 +96,13 @@
         "tooltip": false,
         "format": "{icon}",
         "format-icons": {
-            "notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "notification": "<span foreground='#ff5ef1'></span>",
             "none": "",
-            "dnd-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "dnd-notification": "<span foreground='#ff5ef1'></span>",
             "dnd-none": "",
-            "inhibited-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "inhibited-notification": "<span foreground='#ff5ef1'></span>",
             "inhibited-none": "",
-            "dnd-inhibited-notification": "<span foreground='#ff5ef1'><sup></sup></span>",
+            "dnd-inhibited-notification": "<span foreground='#ff5ef1'></span>",
             "dnd-inhibited-none": ""
         },
         "return-type": "json",

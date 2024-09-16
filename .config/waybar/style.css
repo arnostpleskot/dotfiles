@@ -3,36 +3,36 @@
 * {
   font-family: Noto Sans;
   font-weight: 500;
-  font-size: 17px;
+  font-size: 18px;
   min-height: 0;
 }
 
 #waybar {
   background: transparent;
-  margin: 5px 5px;
+  border-bottom: 2px solid alpha(#595959, 0.667); 
+  box-shadow: 0 0 4px #1a1a1a;
 }
 
-#workspaces,
+#waybar > box {
+  background-color: alpha(@bg, 0.6);
+  margin-bottom: 2px;
+}
+
 #privacy,
 #clock,
 #custom-notification,
 #tray,
 #pulseaudio,
 #custom-power {
-  background-color: alpha(@bg, 0.8);
-  border: 2px solid alpha(@grey, 0.6); 
-  border-radius: 10px;
   padding: 0.5rem 1rem;
-  margin: 5px 0;
 }
 
 #workspaces {
   padding: 0;
-  margin-left: 1rem;
 }
 
 #workspaces button {
-  color: alpha(@blue, 0.6);
+  color: @blue;
   border-radius: 10px;
   padding: 0.4rem;
 }
@@ -83,7 +83,6 @@
 }
 
 #custom-power {
-  margin-right: 1rem;
   border-radius: 0px 1rem 1rem 0px;
   color: @purple;
   border-left: none;
