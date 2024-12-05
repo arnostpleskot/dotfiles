@@ -37,7 +37,7 @@ function random_fact_of_the_day
             echo $current_date >$daily_fact_file
             echo $random_fact >>$daily_fact_file
         else
-            set random_fact "No fact available. Use 'random_fact --prefetch' to fetch one."
+            set random_fact "No fact available. Use 'daily_fact --prefetch' to fetch one."
         end
     end
 
