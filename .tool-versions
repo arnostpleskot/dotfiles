@@ -4,9 +4,12 @@ lazygit 0.42.0
 pnpm 9.9.0
 exa 0.10.1
 bat 0.24.0
-neovim 0.10.1
+neovim 0.10.2
 nodejs 20.15.1
 ripgrep 14.1.0
 zellij 0.40.1
 lazydocker 0.23.3
 java openjdk-23
+zig 0.13.0
+zoxide 0.9.6
+tmux 3.5a
