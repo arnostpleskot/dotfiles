@@ -155,16 +155,14 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- NOTE: this is handled by cyberdream.nvim
---
--- vim.opt.fillchars = {
---   foldopen = '',
---   foldclose = '',
---   fold = ' ',
---   foldsep = ' ',
---   diff = '╱',
---   eob = ' ',
--- }
+vim.opt.fillchars = {
+  foldopen = '',
+  foldclose = '',
+  fold = ' ',
+  foldsep = ' ',
+  diff = '╱',
+  eob = ' ',
+}
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -627,10 +625,6 @@ require('lazy').setup({
           vim.diagnostic.config {
             float = { border = _border },
           }
-
-          require('lspconfig.ui.windows').default_opts {
-            border = _border,
-          }
         end,
       })
 
@@ -746,7 +740,7 @@ require('lazy').setup({
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         return {
-          timeout_ms = 1000,
+          timeout_ms = 5000,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
           stop_after_first = false,
         }
@@ -929,22 +923,19 @@ require('lazy').setup({
   },
 
   {
-    'scottmckendry/cyberdream.nvim',
-    lazy = false,
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
     config = function()
-      require('cyberdream').setup {
-        transparent = true,
-        hide_fillchars = true,
-        borderless_telescope = false,
-        theme = {
-          highlights = {
-            GitSignsCurrentLineBlame = { fg = '#7b8496' },
-          },
+      vim.cmd.colorscheme 'catppuccin'
+
+      require('catppuccin').setup {
+        flavour = 'auto',
+        background = {
+          light = 'latte',
+          dark = 'mocha',
         },
       }
-
-      vim.cmd 'colorscheme cyberdream'
     end,
   },
 
@@ -953,6 +944,44 @@ require('lazy').setup({
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
+  },
+
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
+      },
+    },
   },
 
   -- {
@@ -1114,16 +1143,34 @@ require('lazy').setup({
     },
   },
 
-  -- {
-  --   'olimorris/codecompanion.nvim',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'nvim-treesitter/nvim-treesitter',
-  --     'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
-  --     'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
-  --   },
-  --   config = true,
-  -- },
+  {
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
+      'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
+      'github/copilot.vim',
+    },
+    config = function()
+      require('codecompanion').setup {
+        strategies = {
+          inline = {
+            adapter = 'copilot',
+          },
+        },
+        adapters = {
+          openai = function()
+            return require('codecompanion.adapters').extend('openai', {
+              env = {
+                api_key = 'cmd:op read "op://Private/OpenAI/api key" --no-newline',
+              },
+            })
+          end,
+        },
+      }
+    end,
+  },
 
   { -- Collection of arious small independent plugins/modules
     'echasnovski/mini.nvim',
