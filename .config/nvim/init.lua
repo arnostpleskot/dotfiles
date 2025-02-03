@@ -111,6 +111,12 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- Shows global status line that stays clean and consistent across splits
+vim.opt.laststatus = 3
+
+-- Enable advanced formatting for markdown
+vim.opt.conceallevel = 1
+
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
@@ -306,6 +312,72 @@ require('lazy').setup({
       current_line_blame_opts = {
         virt_text_pos = 'right_align',
       },
+      on_attach = function(bufnr)
+        local gitsigns = require 'gitsigns'
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end)
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end)
+
+        -- Actions
+        map('n', '<leader>hs', gitsigns.stage_hunk)
+        map('n', '<leader>hr', gitsigns.reset_hunk)
+
+        map('v', '<leader>hs', function()
+          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end)
+
+        map('v', '<leader>hr', function()
+          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end)
+
+        map('n', '<leader>hS', gitsigns.stage_buffer)
+        map('n', '<leader>hR', gitsigns.reset_buffer)
+        map('n', '<leader>hp', gitsigns.preview_hunk)
+        map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+
+        map('n', '<leader>hb', function()
+          gitsigns.blame_line { full = true }
+        end)
+
+        map('n', '<leader>hd', gitsigns.diffthis)
+
+        map('n', '<leader>hD', function()
+          gitsigns.diffthis '~'
+        end)
+
+        map('n', '<leader>hQ', function()
+          gitsigns.setqflist 'all'
+        end)
+        map('n', '<leader>hq', gitsigns.setqflist)
+
+        -- Toggles
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+        map('n', '<leader>td', gitsigns.toggle_deleted)
+        map('n', '<leader>tw', gitsigns.toggle_word_diff)
+
+        -- Text object
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+      end,
     },
   },
 
@@ -327,25 +399,62 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      local wk = require 'which-key'
-      wk.setup {
-        icons = {
-          mappings = false,
+    opts = {
+      -- delay between pressing a key and opening which-key (milliseconds)
+      -- this setting is independent of vim.opt.timeoutlen
+      delay = 0,
+      icons = {
+        -- set icon mappings to true if you have a Nerd Font
+        -- mappings = vim.g.have_nerd_font,
+        -- disable icons
+        mappings = false,
+        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+        keys = vim.g.have_nerd_font and {} or {
+          Up = '<Up> ',
+          Down = '<Down> ',
+          Left = '<Left> ',
+          Right = '<Right> ',
+          C = '<C-…> ',
+          M = '<M-…> ',
+          D = '<D-…> ',
+          S = '<S-…> ',
+          CR = '<CR> ',
+          Esc = '<Esc> ',
+          ScrollWheelDown = '<ScrollWheelDown> ',
+          ScrollWheelUp = '<ScrollWheelUp> ',
+          NL = '<NL> ',
+          BS = '<BS> ',
+          Space = '<Space> ',
+          Tab = '<Tab> ',
+          F1 = '<F1>',
+          F2 = '<F2>',
+          F3 = '<F3>',
+          F4 = '<F4>',
+          F5 = '<F5>',
+          F6 = '<F6>',
+          F7 = '<F7>',
+          F8 = '<F8>',
+          F9 = '<F9>',
+          F10 = '<F10>',
+          F11 = '<F11>',
+          F12 = '<F12>',
         },
-      }
+      },
 
       -- Document existing key chains
-      wk.add {
+      spec = {
         { '<leader>c', group = '[C]ode' },
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]indow' },
-        { '<leader>m', group = '[M]y Eyes Hurt' },
         { '<leader>t', group = '[T]rouble' },
-      }
-    end,
+        { '<leader>a', group = '[A]vante' },
+        { '<leader>x', group = '[x] Trouble' },
+        { '<leader>h', group = 'Git [H]unk' },
+      },
+    },
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -402,6 +511,12 @@ require('lazy').setup({
       -- Telescope picker. This is really useful to discover what Telescope can
       -- do as well as how to actually do it!
 
+      local actions = require 'telescope.actions'
+
+      local open_with_trouble = function(...)
+        return require('trouble.sources.telescope').open(...)
+      end
+
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
@@ -418,6 +533,16 @@ require('lazy').setup({
           history = {
             path = '~/.local/share/nvim/databases/',
             limit = 100,
+          },
+          mappings = {
+            i = {
+              ['<c-t>'] = open_with_trouble,
+              ['<a-t>'] = open_with_trouble,
+              ['<C-Down>'] = actions.cycle_history_next,
+              ['<C-Up>'] = actions.cycle_history_prev,
+              ['<C-f>'] = actions.preview_scrolling_down,
+              ['<C-b>'] = actions.preview_scrolling_up,
+            },
           },
         },
 
@@ -710,7 +835,7 @@ require('lazy').setup({
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls/tsserver)
+            -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
@@ -984,20 +1109,20 @@ require('lazy').setup({
     },
   },
 
-  -- {
-  --   'f-person/auto-dark-mode.nvim',
-  --   priority = 10000,
-  --   enabled = false,
-  --   opts = {
-  --     update_interval = 1000,
-  --     set_dark_mode = function()
-  --       vim.api.nvim_set_option('background', 'dark')
-  --     end,
-  --     set_light_mode = function()
-  --       vim.api.nvim_set_option('background', 'light')
-  --     end,
-  --   },
-  -- },
+  {
+    'f-person/auto-dark-mode.nvim',
+    lazy = false,
+    opts = {
+      set_dark_mode = function()
+        vim.api.nvim_set_option_value('background', 'dark', {})
+      end,
+      set_light_mode = function()
+        vim.api.nvim_set_option_value('background', 'light', {})
+      end,
+      update_interval = 3000,
+      fallback = 'light',
+    },
+  },
 
   {
     'folke/trouble.nvim',
@@ -1059,27 +1184,16 @@ require('lazy').setup({
   },
 
   {
-    'christoomey/vim-tmux-navigator',
-    cmd = {
-      'TmuxNavigateLeft',
-      'TmuxNavigateDown',
-      'TmuxNavigateUp',
-      'TmuxNavigateRight',
-      'TmuxNavigatePrevious',
-    },
+    'https://git.sr.ht/~swaits/zellij-nav.nvim',
     lazy = true,
-    init = function()
-      vim.g.tmux_navigator_no_mappings = 1
-
-      -- Map Control + M to navigate left
-      vim.api.nvim_set_keymap('n', '<M-T-S-D-PageUp>', ':<C-U>TmuxNavigateLeft<CR>', { silent = true, noremap = true })
-      -- Map Control + N to navigate down
-      vim.api.nvim_set_keymap('n', '<C-n>', ':<C-U>TmuxNavigateDown<CR>', { silent = true, noremap = true })
-      -- Map Control + E to navigate up
-      vim.api.nvim_set_keymap('n', '<C-e>', ':<C-U>TmuxNavigateUp<CR>', { silent = true, noremap = true })
-      -- Map Control + I to navigate right
-      vim.api.nvim_set_keymap('n', '<T-C-D-PageUp>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true })
-    end,
+    event = 'VeryLazy',
+    keys = {
+      { '<M-m>', '<cmd>ZellijNavigateLeftTab<cr>', { silent = true, desc = 'navigate left or tab' } },
+      { '<M-n>', '<cmd>ZellijNavigateDown<cr>', { silent = true, desc = 'navigate down' } },
+      { '<M-e>', '<cmd>ZellijNavigateUp<cr>', { silent = true, desc = 'navigate up' } },
+      { '<M-i>', '<cmd>ZellijNavigateRightTab<cr>', { silent = true, desc = 'navigate right or tab' } },
+    },
+    opts = {},
   },
 
   {
@@ -1144,29 +1258,288 @@ require('lazy').setup({
   },
 
   {
-    'olimorris/codecompanion.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
-      'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
-      'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
-      'github/copilot.vim',
+    'sindrets/diffview.nvim',
+    init = function()
+      require('diffview').setup {}
+    end,
+    keys = {
+      { '<leader>d', '<cmd>DiffviewOpen<cr>', { silent = true, desc = 'Diffview' } },
     },
-    config = function()
-      require('codecompanion').setup {
-        strategies = {
-          inline = {
-            adapter = 'copilot',
+  },
+
+  -- {
+  --   'olimorris/codecompanion.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
+  --     'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
+  --     'github/copilot.vim',
+  --   },
+  --   config = function()
+  --     require('codecompanion').setup {
+  --       strategies = {
+  --         inline = {
+  --           adapter = 'copilot',
+  --         },
+  --       },
+  --       adapters = {
+  --         openai = function()
+  --           return require('codecompanion.adapters').extend('openai', {
+  --             env = {
+  --               api_key = 'cmd:op read "op://Private/OpenAI/api key" --no-newline',
+  --             },
+  --           })
+  --         end,
+  --       },
+  --     }
+  --   end,
+  -- },
+
+  {
+    'yetone/avante.nvim',
+    event = 'VeryLazy',
+    lazy = false,
+    version = false, -- set this if you want to always pull the latest change
+    opts = {
+      -- add any opts here
+      provider = 'ollama',
+      vendors = {
+        ollama = {
+          __inherited_from = 'openai',
+          api_key_name = '',
+          endpoint = 'http://127.0.0.1:11434/v1',
+          model = 'deepseek-r1:14b',
+        },
+      },
+      -- openai = {
+      --   api_key_name = { 'op', 'read', 'op://Private/OpenAI/avante_api_key', '--no-newline' },
+      -- },
+      behaviour = {
+        auto_suggestions = false,
+      },
+      hints = {
+        enabled = false,
+      },
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = 'make',
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      'stevearc/dressing.nvim',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      --- The below dependencies are optional,
+      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+      {
+        -- support for image pasting
+        'HakonHarnes/img-clip.nvim',
+        event = 'VeryLazy',
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
           },
         },
-        adapters = {
-          openai = function()
-            return require('codecompanion.adapters').extend('openai', {
-              env = {
-                api_key = 'cmd:op read "op://Private/OpenAI/api key" --no-newline',
-              },
-            })
-          end,
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { 'markdown', 'Avante' },
+        },
+        ft = { 'markdown', 'Avante' },
+      },
+    },
+
+    init = function()
+      -- prefil edit window with common scenarios to avoid repeating query and submit immediately
+      local prefill_edit_window = function(request)
+        require('avante.api').edit()
+        local code_bufnr = vim.api.nvim_get_current_buf()
+        local code_winid = vim.api.nvim_get_current_win()
+        if code_bufnr == nil or code_winid == nil then
+          return
+        end
+        vim.api.nvim_buf_set_lines(code_bufnr, 0, -1, false, { request })
+        -- Optionally set the cursor position to the end of the input
+        vim.api.nvim_win_set_cursor(code_winid, { 1, #request + 1 })
+        -- Simulate Ctrl+S keypress to submit
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-s>', true, true, true), 'v', true)
+      end
+
+      -- NOTE: most templates are inspired from ChatGPT.nvim -> chatgpt-actions.json
+      local avante_grammar_correction = 'Correct the text to standard English, but keep any code blocks inside intact.'
+      local avante_keywords = 'Extract the main keywords from the following text'
+      local avante_code_readability_analysis = [[
+  You must identify any readability issues in the code snippet.
+  Some readability issues to consider:
+  - Unclear naming
+  - Unclear purpose
+  - Redundant or obvious comments
+  - Lack of comments
+  - Long or complex one liners
+  - Too much nesting
+  - Long variable names
+  - Inconsistent naming and code style.
+  - Code repetition
+  You may identify additional problems. The user submits a small section of code from a larger file.
+  Only list lines with readability issues, in the format <line_num>|<issue and proposed solution>
+  If there's no issues with code respond with only: <OK>
+]]
+      local avante_optimize_code = 'Optimize the following code'
+      local avante_summarize = 'Summarize the following text'
+      local avante_translate = 'Translate this into Czech, but keep any code blocks inside intact'
+      local avante_explain_code = 'Explain the following code'
+      local avante_complete_code = 'Complete the following codes written in ' .. vim.bo.filetype
+      local avante_add_docstring = 'Add docstring to the following codes'
+      local avante_fix_bugs = 'Fix the bugs inside the following codes if any'
+      local avante_add_tests = 'Implement tests for the following code'
+
+      require('which-key').add {
+        { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
+        {
+          mode = { 'n', 'v' },
+          {
+            '<leader>ag',
+            function()
+              require('avante.api').ask { question = avante_grammar_correction }
+            end,
+            desc = 'Grammar Correction(ask)',
+          },
+          {
+            '<leader>ak',
+            function()
+              require('avante.api').ask { question = avante_keywords }
+            end,
+            desc = 'Keywords(ask)',
+          },
+          {
+            '<leader>al',
+            function()
+              require('avante.api').ask { question = avante_code_readability_analysis }
+            end,
+            desc = 'Code Readability Analysis(ask)',
+          },
+          {
+            '<leader>ao',
+            function()
+              require('avante.api').ask { question = avante_optimize_code }
+            end,
+            desc = 'Optimize Code(ask)',
+          },
+          {
+            '<leader>am',
+            function()
+              require('avante.api').ask { question = avante_summarize }
+            end,
+            desc = 'Summarize text(ask)',
+          },
+          {
+            '<leader>an',
+            function()
+              require('avante.api').ask { question = avante_translate }
+            end,
+            desc = 'Translate text(ask)',
+          },
+          {
+            '<leader>ax',
+            function()
+              require('avante.api').ask { question = avante_explain_code }
+            end,
+            desc = 'Explain Code(ask)',
+          },
+          {
+            '<leader>ac',
+            function()
+              require('avante.api').ask { question = avante_complete_code }
+            end,
+            desc = 'Complete Code(ask)',
+          },
+          {
+            '<leader>ad',
+            function()
+              require('avante.api').ask { question = avante_add_docstring }
+            end,
+            desc = 'Docstring(ask)',
+          },
+          {
+            '<leader>ab',
+            function()
+              require('avante.api').ask { question = avante_fix_bugs }
+            end,
+            desc = 'Fix Bugs(ask)',
+          },
+          {
+            '<leader>au',
+            function()
+              require('avante.api').ask { question = avante_add_tests }
+            end,
+            desc = 'Add Tests(ask)',
+          },
+        },
+      }
+
+      require('which-key').add {
+        { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
+        {
+          mode = { 'v' },
+          {
+            '<leader>aG',
+            function()
+              prefill_edit_window(avante_grammar_correction)
+            end,
+            desc = 'Grammar Correction',
+          },
+          {
+            '<leader>aK',
+            function()
+              prefill_edit_window(avante_keywords)
+            end,
+            desc = 'Keywords',
+          },
+          {
+            '<leader>aO',
+            function()
+              prefill_edit_window(avante_optimize_code)
+            end,
+            desc = 'Optimize Code(edit)',
+          },
+          {
+            '<leader>aC',
+            function()
+              prefill_edit_window(avante_complete_code)
+            end,
+            desc = 'Complete Code(edit)',
+          },
+          {
+            '<leader>aD',
+            function()
+              prefill_edit_window(avante_add_docstring)
+            end,
+            desc = 'Docstring(edit)',
+          },
+          {
+            '<leader>aB',
+            function()
+              prefill_edit_window(avante_fix_bugs)
+            end,
+            desc = 'Fix Bugs(edit)',
+          },
+          {
+            '<leader>aU',
+            function()
+              prefill_edit_window(avante_add_tests)
+            end,
+            desc = 'Add Tests(edit)',
+          },
         },
       }
     end,
@@ -1226,6 +1599,22 @@ require('lazy').setup({
 
       require('mini.indentscope').setup {
         symbol = '│',
+      }
+
+      require('mini.move').setup {
+        mappings = {
+          -- Move visual selection in Visual mode.
+          left = '<C-m>',
+          right = '<C-i>',
+          down = '<C-n>',
+          up = '<C-e>',
+
+          -- Move current line in Normal mode
+          line_left = '<C-m>',
+          line_right = '<C-i>',
+          line_down = '<C-n>',
+          line_up = '<C-e>',
+        },
       }
 
       local hipatterns = require 'mini.hipatterns'
@@ -1310,8 +1699,10 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       require('gx').setup {
+        open_browser_app = 'xdg-open',
+        open_browser_args = {},
         handler_options = {
-          search_engine = 'https://duckduckgo.com?q=',
+          search_engine = 'https://searxng.bee-gila.ts.net?q=',
         },
       }
     end,
@@ -1328,6 +1719,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', {
         desc = 'Toggle Spectre',
       })
+    end,
+  },
+
+  {
+    'marcocofano/excalidraw.nvim',
+    config = function()
+      require('excalidraw').setup()
     end,
   },
 

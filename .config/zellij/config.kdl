@@ -1,4 +1,4 @@
-theme "catppuccin"
+theme "catppuccin-mocha"
 default_layout "compact"
 on_force_close "quit"
 session_serialization false
@@ -91,4 +91,61 @@ keybinds {
 		bind "Ctrl l" { SwitchToMode "Scroll"; }
 		bind "Ctrl w" { SwitchToMode "Resize"; }
 	}
+
+	shared {
+		bind "Alt Shift z" {
+		    // Enable the autolock plugin.
+		    MessagePlugin "autolock" {payload "enable";};
+		}
+
+		bind "Ctrl \\" {
+			NewPane
+		}
+
+		bind "Ctrl |" {
+			NewPane
+		}
+
+	}
+
+	locked {
+		bind "Alt z"  {
+			// Disable the autolock plugin.
+			MessagePlugin "autolock" {payload "disable";};
+			// Unlock Zellij.
+			SwitchToMode "Normal";
+		}
+
+		bind "Ctrl t" {
+			NewTab
+		}
+
+		bind "Ctrl \\" {
+			NewPane
+		}
+
+		bind "Ctrl |" {
+			NewPane
+		}
+	}
+}
+
+load_plugins {
+	autolock
+	// zjframes
+}
+
+plugins {
+	autolock location="https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm" {
+		triggers "nvim|vim|v|nv"  // Lock when any open these programs open. They are expected to unlock themselves when closed (e.g., using zellij.vim plugin).
+		watch_triggers "fzf|zoxide|atuin|atac"  // Lock when any of these open and monitor until closed.
+		watch_interval "1.0"  // When monitoring, check every X seconds.
+        }
+
+	// zjframes location="https://github.com/dj95/zjstatus/releases/latest/download/zjframes.wasm" {
+	// 	hide_frame_for_single_pane       "true"
+	// 	hide_frame_except_for_search     "true"
+	// 	hide_frame_except_for_scroll     "true"
+	// 	hide_frame_except_for_fullscreen "true"
+	// }
 }
