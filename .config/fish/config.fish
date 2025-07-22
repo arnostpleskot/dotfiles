@@ -40,7 +40,7 @@ alias dockerclean='docker system prune'
 ## DOTFILES MANAGEMENT
 # https://www.atlassian.com/git/tutorials/dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
-alias t='lazygit --use-config-file="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/themes/catppuccin-mocha.yml"'
+alias t='lazygit' # theme is set by theme-switcher.fish
 
 
 # ABREVATIONS

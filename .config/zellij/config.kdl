@@ -1,4 +1,4 @@
-theme "catppuccin-mocha"
+theme "catppuccin-latte"
 default_layout "compact"
 on_force_close "quit"
 session_serialization false
