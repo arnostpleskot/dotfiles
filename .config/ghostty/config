@@ -15,7 +15,6 @@ adw-toolbar-style = flat
 # Font
 font-size = 14
 
-
 # # Keybindings
 # keybind = alt+x=close_surface
 #
@@ -53,3 +52,4 @@ font-size = 14
 copy-on-select = true
 
 # gtk-titlebar = false
+keybind = shift+enter=text:\n
