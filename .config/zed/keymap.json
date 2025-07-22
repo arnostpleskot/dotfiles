@@ -1,0 +1,92 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "use_key_equivalents": true,
+    "bindings": {
+      "ctrl-b": null, // Disable collab toggle
+      "ctrl-alt-b": null, // Disable chat toggle
+      "ctrl-shift-c": null
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-e": "workspace::ActivatePaneUp",
+      "alt-n": "workspace::ActivatePaneDown",
+      "alt-m": "workspace::ActivatePaneLeft",
+      "alt-i": "workspace::ActivatePaneRight",
+      "ctrl-s": "workspace::SaveAll"
+    }
+  },
+  {
+    "context": "vim_mode == normal || ProjectPane || EmptyPane || SharedScreen",
+    "bindings": {
+      "space space": "file_finder::Toggle",
+      "space t": "tab_switcher::ToggleAll"
+    }
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      // Colemak movement
+      "e": "vim::Up",
+      "n": "vim::Down",
+      "m": "vim::WrappingLeft",
+      "i": "vim::WrappingRight",
+      "M": "vim::StartOfLine",
+      "I": "vim::EndOfLine",
+      "shift-e": "vim::InsertBefore",
+      "t": "vim::InsertBefore",
+      "shift-t": "vim::InsertFirstNonWhitespace",
+
+      // Search
+      "k": "vim::MoveToPreviousMatch",
+      "h": "vim::MoveToNextMatch",
+      "f": "vim::SelectNext",
+      "shift-f": "vim::SelectPrevious",
+
+      // Sneak
+      "s": "vim::PushSneak",
+      "S": "vim::PushSneakBackward"
+    }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "X": "vim::Exchange"
+    }
+  },
+  {
+    "context": "VimControl && !menu && vim_mode != operator",
+    "bindings": {
+      "w": "vim::NextSubwordStart",
+      "b": "vim::PreviousSubwordStart",
+      "ctrl-shift-n": "editor::MoveLineDown",
+      "ctrl-shift-e": "editor::MoveLineUp"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "ctrl-alt-e": "pane::SplitUp",
+      "ctrl-alt-n": "pane::SplitDown",
+      "ctrl-alt-m": "pane::SplitLeft",
+      "ctrl-alt-i": "pane::SplitRight"
+    }
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "m": "project_panel::CollapseSelectedEntry",
+      "n": "menu::SelectNext",
+      "e": "menu::SelectPrevious",
+      "i": "project_panel::ExpandSelectedEntry"
+    }
+  }
+]
