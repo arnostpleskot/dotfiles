@@ -1,6 +1,6 @@
 --[[
 --
-
+ 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -444,17 +444,26 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]ocument' },
+        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
+        { '<leader>m', group = '[M]ode' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]indow' },
         { '<leader>t', group = '[T]rouble' },
         { '<leader>a', group = '[A]vante' },
         { '<leader>x', group = '[x] Trouble' },
-        { '<leader>h', group = 'Git [H]unk' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
+    init = function()
+      require('which-key').add {
+        {
+          mode = { 'n' },
+          { '<leader>ml', '<cmd>Lazy<cr>', { silent = true, desc = '[L]azy' } },
+          { '<leader>mm', '<cmd>Mason<cr>', { silent = true, desc = '[M]ason' } },
+        },
+      }
+    end,
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -623,17 +632,17 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      -- Mason must be loaded before its dependents so we need to set it up here.
+      -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+      { 'mason-org/mason.nvim', opts = {} },
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
-      -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-      -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      -- Allows extra capabilities provided by blink.cmp
+      'saghen/blink.cmp',
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -673,8 +682,9 @@ require('lazy').setup({
           --
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
-          local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          local map = function(keys, func, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
           -- Jump to the definition of the word under your cursor.
@@ -718,47 +728,94 @@ require('lazy').setup({
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
+          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
+          ---@param client vim.lsp.Client
+          ---@param method vim.lsp.protocol.Method
+          ---@param bufnr? integer some lsp support methods only in specific files
+          ---@return boolean
+          local function client_supports_method(client, method, bufnr)
+            if vim.fn.has 'nvim-0.11' == 1 then
+              return client:supports_method(method, bufnr)
+            else
+              return client.supports_method(method, { bufnr = bufnr })
+            end
+          end
+
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.server_capabilities.documentHighlightProvider then
+          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
+              group = highlight_augroup,
               callback = vim.lsp.buf.document_highlight,
             })
 
             vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
               buffer = event.buf,
+              group = highlight_augroup,
               callback = vim.lsp.buf.clear_references,
+            })
+
+            vim.api.nvim_create_autocmd('LspDetach', {
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              callback = function(event2)
+                vim.lsp.buf.clear_references()
+                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+              end,
             })
           end
 
-          -- Add border around lsp floating windows
-          local _border = 'single'
-
-          vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-            border = _border,
-          })
-
-          vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-            border = _border,
-          })
-
-          vim.diagnostic.config {
-            float = { border = _border },
-          }
+          -- The following code creates a keymap to toggle inlay hints in your
+          -- code, if the language server you are using supports them
+          --
+          -- This may be unwanted, since they displace some of your code
+          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+            map('<leader>th', function()
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            end, '[T]oggle Inlay [H]ints')
+          end
         end,
       })
 
+      -- Diagnostic Config
+      -- See :help vim.diagnostic.Opts
+      vim.diagnostic.config {
+        severity_sort = true,
+        float = { border = 'rounded', source = 'if_many' },
+        underline = { severity = vim.diagnostic.severity.ERROR },
+        signs = vim.g.have_nerd_font and {
+          text = {
+            [vim.diagnostic.severity.ERROR] = '󰅚 ',
+            [vim.diagnostic.severity.WARN] = '󰀪 ',
+            [vim.diagnostic.severity.INFO] = '󰋽 ',
+            [vim.diagnostic.severity.HINT] = '󰌶 ',
+          },
+        } or {},
+        virtual_text = {
+          source = 'if_many',
+          spacing = 2,
+          format = function(diagnostic)
+            local diagnostic_message = {
+              [vim.diagnostic.severity.ERROR] = diagnostic.message,
+              [vim.diagnostic.severity.WARN] = diagnostic.message,
+              [vim.diagnostic.severity.INFO] = diagnostic.message,
+              [vim.diagnostic.severity.HINT] = diagnostic.message,
+            }
+            return diagnostic_message[diagnostic.severity]
+          end,
+        },
+      }
+
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
+      --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -799,7 +856,10 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                disable = { 'missing-fields' },
+                globals = { 'vim' },
+              },
             },
           },
         },
@@ -810,13 +870,16 @@ require('lazy').setup({
       }
 
       -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
+      --
+      -- To check the current status of installed tools and/or manually install
+      -- other tools, you can run
       --    :Mason
       --
-      --  You can press `g?` for help in this menu.
-      require('mason').setup()
-
+      -- You can press `g?` for help in this menu.
+      --
+      -- `mason` had to be setup earlier: to configure its options see the
+      -- `dependencies` table for `nvim-lspconfig` above.
+      --
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
@@ -830,6 +893,8 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_installation = false,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -974,7 +1039,7 @@ require('lazy').setup({
           fields = { 'kind', 'abbr', 'menu' },
           expandable_indicator = true,
           format = function(entry, vim_item)
-            local kind = require('lspkind').cmp_format { mode = 'symbol_text', maxwidth = 50 }(entry, vim_item)
+            local kind = require('lspkind').cmp_format { mode = 'symbol_text', maxwidth = 50, symbol_map = { Supermaven = '' } }(entry, vim_item)
             local strings = vim.split(kind.kind, '%s', { trimempty = true })
             kind.kind = ' ' .. (strings[1] or '') .. ' '
             kind.menu = '    (' .. (strings[2] or '') .. ')'
@@ -1042,6 +1107,7 @@ require('lazy').setup({
           { name = 'buffer' },
           { name = 'conventionalcommits' },
           { name = 'emoji' },
+          { name = 'supermaven' },
         },
       }
     end,
@@ -1263,7 +1329,7 @@ require('lazy').setup({
       require('diffview').setup {}
     end,
     keys = {
-      { '<leader>d', '<cmd>DiffviewOpen<cr>', { silent = true, desc = 'Diffview' } },
+      { '<leader>md', '<cmd>DiffviewOpen<cr>', { silent = true, desc = '[D]iffview', mode = { 'n' } } },
     },
   },
 
@@ -1296,252 +1362,264 @@ require('lazy').setup({
   --   end,
   -- },
 
+  -- {
+  --   'yetone/avante.nvim',
+  --   event = 'VeryLazy',
+  --   lazy = false,
+  --   version = false, -- set this if you want to always pull the latest change
+  --   opts = {
+  --     -- add any opts here
+  --     provider = 'ollama',
+  --     auto_suggestions_provider = 'ollama_as',
+  --     ollama = {
+  --       api_key_name = '',
+  --       endpoint = 'http://127.0.0.1:11434/',
+  --       model = 'gemma3:27b',
+  --     },
+  --     vendors = {
+  --       ollama_as = {
+  --         __inherited_from = 'ollama',
+  --         api_key_name = '',
+  --         endpoint = 'http://127.0.0.1:11434/',
+  --         model = 'starcoder2',
+  --       },
+  --     },
+  --     hints = { enabled = false },
+  --     behaviour = {
+  --       auto_suggestions = true,
+  --       auto_suggestions_provider = 'ollama_as',
+  --       minimize_diff = true,
+  --       support_paste_from_clipboard = false,
+  --       enable_cursor_planning_mode = false,
+  --       enable_claude_text_editor_tool_mode = false,
+  --     },
+  --   },
+  --   build = 'make',
+  --   dependencies = {
+  --     'stevearc/dressing.nvim',
+  --     'nvim-lua/plenary.nvim',
+  --     'MunifTanjim/nui.nvim',
+  --     --- The below dependencies are optional,
+  --     'echasnovski/mini.pick',
+  --     'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+  --     'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+  --     -- "zbirenbaum/copilot.lua", -- for providers='copilot'
+  --     {
+  --       -- support for image pasting
+  --       'HakonHarnes/img-clip.nvim',
+  --       event = 'VeryLazy',
+  --       opts = {
+  --         -- recommended settings
+  --         default = {
+  --           embed_image_as_base64 = false,
+  --           prompt_for_file_name = false,
+  --           drag_and_drop = {
+  --             insert_mode = true,
+  --           },
+  --         },
+  --       },
+  --     },
+  --     {
+  --       -- Make sure to set this up properly if you have lazy=true
+  --       'MeanderingProgrammer/render-markdown.nvim',
+  --       opts = {
+  --         file_types = { 'markdown', 'Avante' },
+  --       },
+  --       ft = { 'markdown', 'Avante' },
+  --     },
+  --   },
+  --
+  --   --     init = function()
+  --   --       -- prefil edit window with common scenarios to avoid repeating query and submit immediately
+  --   --       local prefill_edit_window = function(request)
+  --   --         require('avante.api').edit()
+  --   --         local code_bufnr = vim.api.nvim_get_current_buf()
+  --   --         local code_winid = vim.api.nvim_get_current_win()
+  --   --         if code_bufnr == nil or code_winid == nil then
+  --   --           return
+  --   --         end
+  --   --         vim.api.nvim_buf_set_lines(code_bufnr, 0, -1, false, { request })
+  --   --         -- Optionally set the cursor position to the end of the input
+  --   --         vim.api.nvim_win_set_cursor(code_winid, { 1, #request + 1 })
+  --   --         -- Simulate Ctrl+S keypress to submit
+  --   --         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-s>', true, true, true), 'v', true)
+  --   --       end
+  --   --
+  --   --       -- NOTE: most templates are inspired from ChatGPT.nvim -> chatgpt-actions.json
+  --   --       local avante_grammar_correction = 'Correct the text to standard English, but keep any code blocks inside intact.'
+  --   --       local avante_keywords = 'Extract the main keywords from the following text'
+  --   --       local avante_code_readability_analysis = [[
+  --   --   You must identify any readability issues in the code snippet.
+  --   --   Some readability issues to consider:
+  --   --   - Unclear naming
+  --   --   - Unclear purpose
+  --   --   - Redundant or obvious comments
+  --   --   - Lack of comments
+  --   --   - Long or complex one liners
+  --   --   - Too much nesting
+  --   --   - Long variable names
+  --   --   - Inconsistent naming and code style.
+  --   --   - Code repetition
+  --   --   You may identify additional problems. The user submits a small section of code from a larger file.
+  --   --   Only list lines with readability issues, in the format <line_num>|<issue and proposed solution>
+  --   --   If there's no issues with code respond with only: <OK>
+  --   -- ]]
+  --   --       local avante_optimize_code = 'Optimize the following code'
+  --   --       local avante_summarize = 'Summarize the following text'
+  --   --       local avante_translate = 'Translate this into Czech, but keep any code blocks inside intact'
+  --   --       local avante_explain_code = 'Explain the following code'
+  --   --       local avante_complete_code = 'Complete the following codes written in ' .. vim.bo.filetype
+  --   --       local avante_add_docstring = 'Add docstring to the following codes'
+  --   --       local avante_fix_bugs = 'Fix the bugs inside the following codes if any'
+  --   --       local avante_add_tests = 'Implement tests for the following code'
+  --   --
+  --   --       require('which-key').add {
+  --   --         { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
+  --   --         {
+  --   --           mode = { 'n', 'v' },
+  --   --           {
+  --   --             '<leader>ag',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_grammar_correction }
+  --   --             end,
+  --   --             desc = 'Grammar Correction(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ak',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_keywords }
+  --   --             end,
+  --   --             desc = 'Keywords(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>al',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_code_readability_analysis }
+  --   --             end,
+  --   --             desc = 'Code Readability Analysis(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ao',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_optimize_code }
+  --   --             end,
+  --   --             desc = 'Optimize Code(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>am',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_summarize }
+  --   --             end,
+  --   --             desc = 'Summarize text(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>an',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_translate }
+  --   --             end,
+  --   --             desc = 'Translate text(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ax',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_explain_code }
+  --   --             end,
+  --   --             desc = 'Explain Code(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ac',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_complete_code }
+  --   --             end,
+  --   --             desc = 'Complete Code(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ad',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_add_docstring }
+  --   --             end,
+  --   --             desc = 'Docstring(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>ab',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_fix_bugs }
+  --   --             end,
+  --   --             desc = 'Fix Bugs(ask)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>au',
+  --   --             function()
+  --   --               require('avante.api').ask { question = avante_add_tests }
+  --   --             end,
+  --   --             desc = 'Add Tests(ask)',
+  --   --           },
+  --   --         },
+  --   --       }
+  --   --
+  --   --       require('which-key').add {
+  --   --         { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
+  --   --         {
+  --   --           mode = { 'v' },
+  --   --           {
+  --   --             '<leader>aG',
+  --   --             function()
+  --   --               prefill_edit_window(avante_grammar_correction)
+  --   --             end,
+  --   --             desc = 'Grammar Correction',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aK',
+  --   --             function()
+  --   --               prefill_edit_window(avante_keywords)
+  --   --             end,
+  --   --             desc = 'Keywords',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aO',
+  --   --             function()
+  --   --               prefill_edit_window(avante_optimize_code)
+  --   --             end,
+  --   --             desc = 'Optimize Code(edit)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aC',
+  --   --             function()
+  --   --               prefill_edit_window(avante_complete_code)
+  --   --             end,
+  --   --             desc = 'Complete Code(edit)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aD',
+  --   --             function()
+  --   --               prefill_edit_window(avante_add_docstring)
+  --   --             end,
+  --   --             desc = 'Docstring(edit)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aB',
+  --   --             function()
+  --   --               prefill_edit_window(avante_fix_bugs)
+  --   --             end,
+  --   --             desc = 'Fix Bugs(edit)',
+  --   --           },
+  --   --           {
+  --   --             '<leader>aU',
+  --   --             function()
+  --   --               prefill_edit_window(avante_add_tests)
+  --   --             end,
+  --   --             desc = 'Add Tests(edit)',
+  --   --           },
+  --   --         },
+  --   --       }
+  --   --     end,
+  -- },
+  --
+
   {
-    'yetone/avante.nvim',
-    event = 'VeryLazy',
-    lazy = false,
-    version = false, -- set this if you want to always pull the latest change
-    opts = {
-      -- add any opts here
-      provider = 'ollama',
-      vendors = {
-        ollama = {
-          __inherited_from = 'openai',
-          api_key_name = '',
-          endpoint = 'http://127.0.0.1:11434/v1',
-          model = 'deepseek-r1:14b',
-        },
-      },
-      -- openai = {
-      --   api_key_name = { 'op', 'read', 'op://Private/OpenAI/avante_api_key', '--no-newline' },
-      -- },
-      behaviour = {
-        auto_suggestions = false,
-      },
-      hints = {
-        enabled = false,
-      },
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = 'make',
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      --- The below dependencies are optional,
-      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-      {
-        -- support for image pasting
-        'HakonHarnes/img-clip.nvim',
-        event = 'VeryLazy',
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
-      },
-    },
-
-    init = function()
-      -- prefil edit window with common scenarios to avoid repeating query and submit immediately
-      local prefill_edit_window = function(request)
-        require('avante.api').edit()
-        local code_bufnr = vim.api.nvim_get_current_buf()
-        local code_winid = vim.api.nvim_get_current_win()
-        if code_bufnr == nil or code_winid == nil then
-          return
-        end
-        vim.api.nvim_buf_set_lines(code_bufnr, 0, -1, false, { request })
-        -- Optionally set the cursor position to the end of the input
-        vim.api.nvim_win_set_cursor(code_winid, { 1, #request + 1 })
-        -- Simulate Ctrl+S keypress to submit
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-s>', true, true, true), 'v', true)
-      end
-
-      -- NOTE: most templates are inspired from ChatGPT.nvim -> chatgpt-actions.json
-      local avante_grammar_correction = 'Correct the text to standard English, but keep any code blocks inside intact.'
-      local avante_keywords = 'Extract the main keywords from the following text'
-      local avante_code_readability_analysis = [[
-  You must identify any readability issues in the code snippet.
-  Some readability issues to consider:
-  - Unclear naming
-  - Unclear purpose
-  - Redundant or obvious comments
-  - Lack of comments
-  - Long or complex one liners
-  - Too much nesting
-  - Long variable names
-  - Inconsistent naming and code style.
-  - Code repetition
-  You may identify additional problems. The user submits a small section of code from a larger file.
-  Only list lines with readability issues, in the format <line_num>|<issue and proposed solution>
-  If there's no issues with code respond with only: <OK>
-]]
-      local avante_optimize_code = 'Optimize the following code'
-      local avante_summarize = 'Summarize the following text'
-      local avante_translate = 'Translate this into Czech, but keep any code blocks inside intact'
-      local avante_explain_code = 'Explain the following code'
-      local avante_complete_code = 'Complete the following codes written in ' .. vim.bo.filetype
-      local avante_add_docstring = 'Add docstring to the following codes'
-      local avante_fix_bugs = 'Fix the bugs inside the following codes if any'
-      local avante_add_tests = 'Implement tests for the following code'
-
-      require('which-key').add {
-        { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
-        {
-          mode = { 'n', 'v' },
-          {
-            '<leader>ag',
-            function()
-              require('avante.api').ask { question = avante_grammar_correction }
-            end,
-            desc = 'Grammar Correction(ask)',
-          },
-          {
-            '<leader>ak',
-            function()
-              require('avante.api').ask { question = avante_keywords }
-            end,
-            desc = 'Keywords(ask)',
-          },
-          {
-            '<leader>al',
-            function()
-              require('avante.api').ask { question = avante_code_readability_analysis }
-            end,
-            desc = 'Code Readability Analysis(ask)',
-          },
-          {
-            '<leader>ao',
-            function()
-              require('avante.api').ask { question = avante_optimize_code }
-            end,
-            desc = 'Optimize Code(ask)',
-          },
-          {
-            '<leader>am',
-            function()
-              require('avante.api').ask { question = avante_summarize }
-            end,
-            desc = 'Summarize text(ask)',
-          },
-          {
-            '<leader>an',
-            function()
-              require('avante.api').ask { question = avante_translate }
-            end,
-            desc = 'Translate text(ask)',
-          },
-          {
-            '<leader>ax',
-            function()
-              require('avante.api').ask { question = avante_explain_code }
-            end,
-            desc = 'Explain Code(ask)',
-          },
-          {
-            '<leader>ac',
-            function()
-              require('avante.api').ask { question = avante_complete_code }
-            end,
-            desc = 'Complete Code(ask)',
-          },
-          {
-            '<leader>ad',
-            function()
-              require('avante.api').ask { question = avante_add_docstring }
-            end,
-            desc = 'Docstring(ask)',
-          },
-          {
-            '<leader>ab',
-            function()
-              require('avante.api').ask { question = avante_fix_bugs }
-            end,
-            desc = 'Fix Bugs(ask)',
-          },
-          {
-            '<leader>au',
-            function()
-              require('avante.api').ask { question = avante_add_tests }
-            end,
-            desc = 'Add Tests(ask)',
-          },
-        },
-      }
-
-      require('which-key').add {
-        { '<leader>a', group = '[A]vante' }, -- NOTE: add for avante.nvim
-        {
-          mode = { 'v' },
-          {
-            '<leader>aG',
-            function()
-              prefill_edit_window(avante_grammar_correction)
-            end,
-            desc = 'Grammar Correction',
-          },
-          {
-            '<leader>aK',
-            function()
-              prefill_edit_window(avante_keywords)
-            end,
-            desc = 'Keywords',
-          },
-          {
-            '<leader>aO',
-            function()
-              prefill_edit_window(avante_optimize_code)
-            end,
-            desc = 'Optimize Code(edit)',
-          },
-          {
-            '<leader>aC',
-            function()
-              prefill_edit_window(avante_complete_code)
-            end,
-            desc = 'Complete Code(edit)',
-          },
-          {
-            '<leader>aD',
-            function()
-              prefill_edit_window(avante_add_docstring)
-            end,
-            desc = 'Docstring(edit)',
-          },
-          {
-            '<leader>aB',
-            function()
-              prefill_edit_window(avante_fix_bugs)
-            end,
-            desc = 'Fix Bugs(edit)',
-          },
-          {
-            '<leader>aU',
-            function()
-              prefill_edit_window(avante_add_tests)
-            end,
-            desc = 'Add Tests(edit)',
-          },
-        },
-      }
+    'supermaven-inc/supermaven-nvim',
+    config = function()
+      require('supermaven-nvim').setup {}
     end,
   },
 
@@ -1725,8 +1803,32 @@ require('lazy').setup({
   {
     'marcocofano/excalidraw.nvim',
     config = function()
-      require('excalidraw').setup()
+      require('excalidraw').setup {}
     end,
+  },
+
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = { enabled = true },
+      dashboard = { enabled = true },
+      explorer = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      picker = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+    },
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
